@@ -106,6 +106,8 @@
 import Header from "$lib/Header.svelte";
 import Box from "$lib/Box.svelte";
 import { time } from "./time.js";
+import { backgroundColor } from "./color.js";
+import { onMount } from "svelte";
 
 const formatter = Intl.DateTimeFormat("de", {
   hour12: false,
@@ -116,12 +118,61 @@ const formatter = Intl.DateTimeFormat("de", {
 const dayFormatter = Intl.DateTimeFormat("de", {
   dateStyle: "full",
 });
+
+const dateFormatter = Intl.DateTimeFormat("de", {
+  dateStyle: "short",
+});
+
+let quoteJson = {
+  text: "",
+  author: "",
+};
+
+/**
+ * @type {any[]}
+ */
+let menus = [];
+
+onMount(async () => {
+  getQuotes(window);
+  setInterval(async () => getQuotes(window), 60 * 1000);
+
+  const url =
+    window.location.protocol +
+    "//" +
+    window.location.hostname +
+    ":" +
+    window.location.port +
+    "/api/menu/menu.json";
+  const res = await fetch(url, {
+    method: "GET",
+  });
+
+  menus = JSON.parse(await res.text());
+});
+/**
+ * @param {Window & typeof globalThis} window
+ */
+async function getQuotes(window) {
+  const url =
+    window.location.protocol +
+    "//" +
+    window.location.hostname +
+    ":" +
+    window.location.port +
+    "/api/quotes/quotes.json";
+  const resp = await fetch(url, {
+    method: "GET",
+  });
+  let text = await resp.text();
+  quoteJson = JSON.parse(text);
+}
 </script>
 
-<div>
-  <Header />
+<div class="">
+  <Header backgroundColor="{$backgroundColor}" />
 
-  <div class="mx-5 h-max w-auto text-gray-50">
+  <div class="mx-5 w-auto text-gray-50">
     <div class="grid grid-cols-3 gap-10">
       <div>
         <Box clazz="h-auto content-around">
@@ -131,14 +182,20 @@ const dayFormatter = Intl.DateTimeFormat("de", {
           <h2 class="mx-5 mb-5 text-3xl">{dayFormatter.format($time)}</h2>
         </Box>
         <Box clazz="h-auto items-center">
-          <div class="mx-5 my-5 grid grid-cols-2">
-            <p class="col-span-2 mx-3 text-sm">
-              If you can't explain it simply, you don't understand it well
-              enough.
-            </p>
-            <i class="fa-solid fa-quote-right fa-2xl mt-4"></i>
-            <p class="font-bold">Albert Einstein</p>
-          </div>
+          {#if quoteJson["text"] != ""}
+            <div class="mx-5 my-5 grid grid-cols-2">
+              <p class="col-span-2 mx-3 text-sm">
+                {quoteJson["text"]}
+              </p>
+              <i class="fa-solid fa-quote-right fa-2xl mt-4"></i>
+              <p class="font-bold">{quoteJson["author"]}</p>
+            </div>
+          {:else}
+            <div class="mx-5 my-5 flex animate-pulse">
+              <div class="mx-3 h-10 w-32 rounded-full bg-white"></div>
+              <i class="fa-solid fa-quote-right fa-2xl mt-4"></i>
+            </div>
+          {/if}
         </Box>
         <Box clazz="h-44 content-around">
           <p class="mx-5 text-xl">Angemeldet als</p>
@@ -196,23 +253,41 @@ const dayFormatter = Intl.DateTimeFormat("de", {
         <Box
           clazz="h-auto flex justify-end items-center text-right place-self-end">
           <div class="my-5 mx-5 whitespace-pre-line">
-            <h1 class="text-2xl font-bold">Aramark-Menu am 10.11.2022</h1>
+            <h1 class="text-2xl font-bold">
+              Aramark-Menü am {dateFormatter.format($time)}
+            </h1>
+
             <ul
               class="my-2 list-inside list-none items-center divide-y-2 whitespace-normal align-middle">
-              <li>
-                Smoothie Bananen-Beeren und Birne<span class="pl-5"
-                  ><i class="fa-solid fa-sack-dollar mr-2"></i>5€</span>
-              </li>
-              <li class="mt-3">
-                Vitaminbar Bircher Müsli mit Frucht<span class="pl-5"
-                  ><i class="fa-solid fa-sack-dollar mr-2"></i>10€</span>
-              </li>
-              <li class="mt-3">
-                Hausgemachter Gaisburger Marsch mit Karotte, Sellerie, Spätzle,
-                Kartoffeln und Rindfleisch, dazu ein ofenfrisches Brötchen <span
-                  class="pl-5"
-                  ><i class="fa-solid fa-sack-dollar mr-2"></i>10€</span>
-              </li>
+              {#each menus as menu}
+                <li class="mt-3">
+                  {menu["title"] + " " + menu["text"]}<span class="pl-5"
+                    ><i class="fa-solid fa-sack-dollar mr-2"></i>{menu[
+                      "price"
+                    ]}</span>
+                </li>
+              {:else}
+                <div class="mt-5 flex items-center justify-end">
+                  <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                      data-darkreader-inline-stroke=""
+                      style="--darkreader-inline-stroke:currentColor;"></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      data-darkreader-inline-fill=""
+                      style="--darkreader-inline-fill:currentColor;"></path>
+                  </svg>
+                  <p class="ml-5">Lade Aramark Menü...</p>
+                </div>
+              {/each}
             </ul>
             <hr class="website-divider mt-5" />
             <a
