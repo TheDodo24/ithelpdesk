@@ -1,17 +1,17 @@
 <script>
 import logo from "$lib/logo.png";
-import { flip } from "svelte/animate";
 import { scale } from "svelte/transition";
-import { fly } from "svelte/transition";
 import { quintOut } from "svelte/easing";
 let open = false;
 let navbar = false;
 let openHandy = false;
+
+export let backgroundColor;
 </script>
 
-<header class="class">
+<header>
   <nav
-    class="static mx-5 mt-5 h-16 w-auto rounded-2xl bg-purple-900 text-xl text-slate-300 shadow-lg shadow-slate-700 hover:shadow-slate-600">
+    class="static mx-5 mt-5 h-16 w-auto rounded-2xl {backgroundColor} text-xl text-slate-300 shadow-lg shadow-slate-700 hover:shadow-slate-600">
     <div
       class="container mx-auto flex h-16 flex-wrap items-center justify-between">
       <a href="/" class="flex h-16 items-center justify-start">
