@@ -4,9 +4,26 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%sveltekit.assets%/favicon.png" />
     <meta name="viewport" content="width=device-width" />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <link rel="stylesheet" href="https://use.typekit.net/qsc0amx.css" />
+    <script
+      src="https://kit.fontawesome.com/77a880d64a.js"
+      crossorigin="anonymous"
+    ></script>
     %sveltekit.head%
   </head>
-  <body>
+  <body class="bg-slate-900">
     <div>%sveltekit.body%</div>
   </body>
+
+  <style>
+    html {
+      font-family: mundial, sans-serif;
+      font-weight: 200;
+      font-style: normal;
+    }
+  </style>
 </html>
