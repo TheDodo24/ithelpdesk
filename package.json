@@ -26,6 +26,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"daisyui": "^2.40.1",
 		"hpagent": "^1.2.0"
 	}
 }

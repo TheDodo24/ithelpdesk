@@ -1,113 +1,19 @@
-<style>
-.website-divider {
-  border-top: 8px solid;
-  animation: rainbow-text 2.5s linear;
-  animation-iteration-count: infinite;
-}
-
-.aramarkio {
-  animation: rainbow-text 2.5s linear;
-  animation-iteration-count: infinite;
-}
-
-.aramarkio:hover {
-  animation: grow 5s linear;
-  animation-iteration-count: infinite;
-}
-
-@keyframes grow {
-  100%,
-  0% {
-    color: rgb(0, 255, 255);
-    font-size: 1.5rem;
-  }
-  8% {
-    color: rgb(0, 127, 255);
-  }
-  16% {
-    color: rgb(0, 0, 255);
-  }
-  25% {
-    color: rgb(127, 0, 255);
-    font-size: 1.75rem;
-  }
-  33% {
-    color: rgb(255, 0, 255);
-  }
-  41% {
-    color: rgb(255, 0, 127);
-    font-size: 2rem;
-  }
-  50% {
-    color: rgb(255, 0, 0);
-  }
-  58% {
-    color: rgb(255, 127, 0);
-  }
-  66% {
-    color: rgb(255, 255, 0);
-  }
-  75% {
-    color: rgb(127, 255, 0);
-    font-size: 1.75rem;
-  }
-  83% {
-    color: rgb(0, 255, 0);
-  }
-  91% {
-    color: rgb(0, 255, 127);
-    font-size: 1.5rem;
-  }
-}
-
-@keyframes rainbow-text {
-  100%,
-  0% {
-    color: rgb(0, 255, 255);
-  }
-  8% {
-    color: rgb(0, 127, 255);
-  }
-  16% {
-    color: rgb(0, 0, 255);
-  }
-  25% {
-    color: rgb(127, 0, 255);
-  }
-  33% {
-    color: rgb(255, 0, 255);
-  }
-  41% {
-    color: rgb(255, 0, 127);
-  }
-  50% {
-    color: rgb(255, 0, 0);
-  }
-  58% {
-    color: rgb(255, 127, 0);
-  }
-  66% {
-    color: rgb(255, 255, 0);
-  }
-  75% {
-    color: rgb(127, 255, 0);
-  }
-  83% {
-    color: rgb(0, 255, 0);
-  }
-  91% {
-    color: rgb(0, 255, 127);
-  }
-}
-</style>
-
 <script>
+// @ts-nocheck
+
 // @ts-ignore
-import Header from "$lib/Header.svelte";
+import { time } from "./stores/time.js";
+import { menu } from "./stores/menu.js";
+import { potd } from "./stores/potd.js";
+import { backgroundColor } from "./stores/color.js";
+import { weatherJson } from "./stores/weather.js";
+import Header from "$lib/Header_test.svelte";
 import Box from "$lib/Box.svelte";
-import { time } from "./time.js";
-import { backgroundColor } from "./color.js";
-import { onMount } from "svelte";
+import { onMount, onDestroy } from "svelte";
+import { user } from "./stores/user.js";
+//import style from "./startpage.css";
+
+/** @type {import('./$types').PageData} */ export let data;
 
 const formatter = Intl.DateTimeFormat("de", {
   hour12: false,
@@ -128,28 +34,17 @@ let quoteJson = {
   author: "",
 };
 
-/**
- * @type {any[]}
- */
-let menus = [];
+var modal = true;
 
 onMount(async () => {
   getQuotes(window);
   setInterval(async () => getQuotes(window), 60 * 1000);
 
-  const url =
-    window.location.protocol +
-    "//" +
-    window.location.hostname +
-    ":" +
-    window.location.port +
-    "/api/menu/menu.json";
-  const res = await fetch(url, {
-    method: "GET",
-  });
-
-  menus = JSON.parse(await res.text());
+  getWeather(window);
+  getPOTD(window);
+  getMenu(window);
 });
+
 /**
  * @param {Window & typeof globalThis} window
  */
@@ -167,10 +62,57 @@ async function getQuotes(window) {
   let text = await resp.text();
   quoteJson = JSON.parse(text);
 }
+
+async function getMenu(window) {
+  const url =
+    window.location.protocol +
+    "//" +
+    window.location.hostname +
+    ":" +
+    window.location.port +
+    "/api/menu/menu.json";
+  let res;
+  res = await fetch(url, {
+    method: "GET",
+  });
+  let text = await res.text();
+  if (res.status == 200) {
+    menu.set(JSON.parse(text));
+  } else {
+    menu.set("not-found");
+  }
+}
+
+async function getPOTD(window) {
+  const imgres = await fetch(
+    window.location.protocol +
+      "//" +
+      window.location.hostname +
+      ":" +
+      window.location.port +
+      "/api/picture/image.json"
+  );
+
+  potd.set(JSON.parse(await imgres.text())["src"]);
+}
+
+async function getWeather(window) {
+  const weatherRes = await fetch(
+    window.location.protocol +
+      "//" +
+      window.location.hostname +
+      ":" +
+      window.location.port +
+      "/api/weather/weather.json"
+  );
+  weatherJson.set(JSON.parse(await weatherRes.text()));
+}
 </script>
 
-<div class="">
-  <Header backgroundColor="{$backgroundColor}" />
+<div class="pb-5">
+  <Header
+    backgroundColor="bg-{$backgroundColor}-500"
+    userName="{data.user.name}" />
 
   <div class="mx-5 w-auto text-gray-50">
     <div class="grid grid-cols-3 gap-10">
@@ -197,13 +139,23 @@ async function getQuotes(window) {
             </div>
           {/if}
         </Box>
-        <Box clazz="h-44 content-around">
-          <p class="mx-5 text-xl">Angemeldet als</p>
-          <p class="mx-5 text-5xl font-bold">Felix</p>
-          <div class="mx-5">
-            <p><i class="fa-solid fa-ranking-star mr-2"></i>Ober Noob</p>
-            <p><i class="fa-solid fa-medal mr-2"></i> -10000</p>
-          </div>
+        <Box clazz="h-auto">
+          {#if data.user.sessionid}
+            <div class="my-5 content-around">
+              <p class="mx-5 text-xl">Angemeldet als</p>
+              <p class="mx-5 text-5xl font-bold">{data.user.sessionid}</p>
+              <div class="mx-5">
+                <p><i class="fa-solid fa-ranking-star mr-2"></i>Ober Noob</p>
+                <p><i class="fa-solid fa-medal mr-2"></i> -10000</p>
+              </div>
+            </div>
+          {:else}
+            <div class="my-5">
+              <p class="mx-5 text-3xl">Du bist nicht angemeldet</p>
+              <a href="/signin" class="mx-5 mt-8 text-xl underline"
+                >Anmelden<i class="fa-solid fa-arrow-right ml-2"></i></a>
+            </div>
+          {/if}
         </Box>
         <Box clazz="h-auto content-around">
           <p class="ml-5 mt-5 text-2xl font-bold underline">Deine Anfragen</p>
@@ -216,10 +168,31 @@ async function getQuotes(window) {
         <Box clazz="h-auto">
           <h1 class="ml-5 mt-5 text-2xl font-bold">Bild des Tages</h1>
           <div class="my-5 flex justify-center">
-            <img
-              class="w-10/12"
-              src="https://apod.nasa.gov/apod/image/2211/LunarEclipseRyanHan.jpg"
-              alt="Picture of the day" />
+            {#if $potd != ""}
+              <!-- svelte-ignore a11y-img-redundant-alt -->
+              <img class="w-10/12" src="{$potd}" alt="Picture of the day" />
+            {:else}
+              <div class="mt-5 flex items-center justify-end">
+                <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                    data-darkreader-inline-stroke=""
+                    style="--darkreader-inline-stroke:currentColor;"></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    data-darkreader-inline-fill=""
+                    style="--darkreader-inline-fill:currentColor;"></path>
+                </svg>
+                <p class="ml-5">Lade NASA POTD ...</p>
+              </div>
+            {/if}
           </div>
         </Box>
         <Box clazz="h-auto">
@@ -240,14 +213,53 @@ async function getQuotes(window) {
         <Box
           clazz="h-auto flex justify-end items-center text-right place-self-end">
           <div class="my-5 mr-5">
-            <img
-              class="w-36 place-self-end"
-              src="https://developer.accuweather.com/sites/default/files/01-s.png"
-              alt="Weather" />
-            <h1 class="text-2xl font-bold">Überwiegend Sonne - 14.2°C</h1>
-            <h1 class="text-xl">Wind 11.7km/h | SSW</h1>
-            <h1 class="text-xl">UV-Index 2 / Niedrig</h1>
-            <h1 class="text-xl">Sicht 16.1km</h1>
+            {#if Object.keys($weatherJson).length > 0}
+              <img
+                class="w-28 place-self-end"
+                src="{$weatherJson['weatherIcon']}"
+                alt="Weather" />
+              <h1 class="text-2xl font-bold">
+                {$weatherJson["weatherText"]} - {$weatherJson["temperature"][
+                  "value"
+                ]}°C
+              </h1>
+              <h1 class="text-xl">
+                <i class="fa-solid fa-temperature-high"></i><span class="ml-5"
+                  >{$weatherJson["temperature"]["max"]}°C</span>
+                |
+                <i class="fa-solid fa-temperature-low ml-5"></i><span
+                  class="ml-2">{$weatherJson["temperature"]["min"]}°C</span>
+              </h1>
+              <h1 class="text-xl">
+                <i class="fa-solid fa-wind mr-5"></i>{$weatherJson["wind"][
+                  "speed"
+                ]}km/h |
+                <i class="fa-solid fa-compass ml-5 mr-2"></i>{$weatherJson[
+                  "wind"
+                ]["degrees"]}°
+              </h1>
+            {:else}
+              <div class="mt-5 flex items-center justify-end">
+                <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                    data-darkreader-inline-stroke=""
+                    style="--darkreader-inline-stroke:currentColor;"></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    data-darkreader-inline-fill=""
+                    style="--darkreader-inline-fill:currentColor;"></path>
+                </svg>
+                <p class="ml-5">Lade Wetterdaten für Ditzingen...</p>
+              </div>
+            {/if}
           </div>
         </Box>
         <Box
@@ -257,38 +269,49 @@ async function getQuotes(window) {
               Aramark-Menü am {dateFormatter.format($time)}
             </h1>
 
-            <ul
-              class="my-2 list-inside list-none items-center divide-y-2 whitespace-normal align-middle">
-              {#each menus as menu}
-                <li class="mt-3">
-                  {menu["title"] + " " + menu["text"]}<span class="pl-5"
-                    ><i class="fa-solid fa-sack-dollar mr-2"></i>{menu[
-                      "price"
-                    ]}</span>
-                </li>
-              {:else}
-                <div class="mt-5 flex items-center justify-end">
-                  <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
-                    <circle
-                      class="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      stroke-width="4"
-                      data-darkreader-inline-stroke=""
-                      style="--darkreader-inline-stroke:currentColor;"></circle>
-                    <path
-                      class="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      data-darkreader-inline-fill=""
-                      style="--darkreader-inline-fill:currentColor;"></path>
-                  </svg>
-                  <p class="ml-5">Lade Aramark Menü...</p>
-                </div>
-              {/each}
-            </ul>
+            {#if $menu == "not-found"}
+              <p>Menü konnte nicht geladen werden.</p>
+              <a
+                href="https://mein.aramark.de/thales-deutschland/menuplan/"
+                target="_blank"
+                rel="noreferrer"
+                class="hover:text-slate-200">
+                <i class="fa-solid fa-square-up-right mr-2 "></i>Aramark Website</a>
+            {:else}
+              <ul
+                class="my-2 list-inside list-none items-center divide-y-2 whitespace-normal align-middle">
+                {#each $menu as m}
+                  <li class="mt-3">
+                    {m["title"] + " " + m["text"]}<span class="pl-5"
+                      ><i class="fa-solid fa-sack-dollar mr-2"></i>{m[
+                        "price"
+                      ]}</span>
+                  </li>
+                {:else}
+                  <div class="mt-5 flex items-center justify-end">
+                    <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                        data-darkreader-inline-stroke=""
+                        style="--darkreader-inline-stroke:currentColor;"
+                      ></circle>
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        data-darkreader-inline-fill=""
+                        style="--darkreader-inline-fill:currentColor;"></path>
+                    </svg>
+                    <p class="ml-5">Lade Aramark Menü...</p>
+                  </div>
+                {/each}
+              </ul>
+            {/if}
             <hr class="website-divider mt-5" />
             <a
               class="aramarkio mt-2 text-xl font-bold"
@@ -302,3 +325,48 @@ async function getQuotes(window) {
     </div>
   </div>
 </div>
+{#if data.user.operation == "login" || data.user.operation == "register"}
+  <div class="modal {modal ? 'modal-open' : ''}">
+    <div class="modal-box relative items-center text-center">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <label
+        for="my-modal-3"
+        class="btn btn-circle btn-sm absolute right-2 top-2"
+        on:click="{() => {
+          data.loggedin = false;
+          modal = false;
+        }}">✕</label>
+      <svg
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 130.2 130.2">
+        <circle
+          class="path circle"
+          fill="none"
+          stroke="#73AF55"
+          stroke-width="6"
+          stroke-miterlimit="10"
+          cx="65.1"
+          cy="65.1"
+          r="62.1"></circle>
+        <polyline
+          class="path check"
+          fill="none"
+          stroke="#73AF55"
+          stroke-width="6"
+          stroke-linecap="round"
+          stroke-miterlimit="10"
+          points="100.2,40.2 51.5,88.8 29.8,67.5 "></polyline>
+      </svg>
+      <h3 class="py-4 text-lg font-bold">
+        Herzlich Willkommen{data.user.operation == "login" ? " zurück" : ""}, {data
+          .user.name}
+      </h3>
+      <p class="">
+        Du hast dich erfolgreich {data.user.operation == "login"
+          ? "eingeloggt"
+          : "registriert"}!
+      </p>
+    </div>
+  </div>
+{/if}
