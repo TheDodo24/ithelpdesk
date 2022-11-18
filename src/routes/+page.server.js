@@ -1,19 +1,33 @@
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ cookies }) {
-  const sessionid = cookies.get("sessionid");
-  const loggedin = cookies.get("loggedin");
-  const registered = cookies.get("registered");
-  const user = {
-    name: sessionid,
-    sessionid: sessionid,
-    operation: "",
-  };
-  if (loggedin) {
-    user["operation"] = "login";
-    cookies.delete("loggedin");
-  } else if (registered) {
-    user["operation"] = "register";
-    cookies.delete("registered");
+export async function load({ url, locals }) {
+  var authStoreModel = JSON.parse(JSON.stringify(locals.pb.authStore.model));
+  console.log("authstore: " + authStoreModel);
+  if (url.searchParams.has("modal") && authStoreModel) {
+    return {
+      op: url.searchParams.get("modal"),
+      user: authStoreModel,
+    };
+  } else if (url.searchParams.has("modal")) {
+    if (url.searchParams.has("name")) {
+      return {
+        op: url.searchParams.get("modal"),
+        name: url.searchParams.get("name"),
+        user: undefined,
+      };
+    }
+    return {
+      op: url.searchParams.get("modal"),
+      user: undefined,
+    };
   }
-  return { user };
+  if (authStoreModel) {
+    return {
+      op: undefined,
+      user: authStoreModel,
+    };
+  }
+  return {
+    op: undefined,
+    user: undefined,
+  };
 }

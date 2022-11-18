@@ -26,7 +26,10 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@dicebear/avatars": "^4.10.5",
+		"@dicebear/micah": "^4.10.5",
 		"daisyui": "^2.40.1",
-		"hpagent": "^1.2.0"
+		"hpagent": "^1.2.0",
+		"pocketbase": "^0.8.0-rc3"
 	}
 }

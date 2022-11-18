@@ -1,54 +1,31 @@
 import { invalid, redirect } from "@sveltejs/kit";
-import { user } from "../stores/user.js";
-
-/** @type {import('./$types').PageServerLoad} */
-export async function load({ cookies }) {
-  const sessionid = cookies.get("sessionid");
-  const user = {
-    name: sessionid,
-    sessionid: sessionid,
-  };
-  return { user };
-}
-
 /** @type {import('./$types').Actions} */
 export const actions = {
-  login: async ({ cookies, request }) => {
-    const data = await request.formData();
-    const name = data.get("name");
-    const password = data.get("password");
-
-    if (name != "" && password != "") {
-      if (name == "Dodo" && password == "abc") {
-        var stringName = name?.toString();
-
-        // @ts-ignore
-        cookies.set("sessionid", stringName);
-        cookies.set("loggedin", "true");
-
-        user.set({ name: stringName, sessionid: stringName });
-
-        throw redirect(303, "/");
-      } else {
+  login: async ({ request, locals }) => {
+    const body = Object.fromEntries(await request.formData());
+    if (body.email && body.password) {
+      try {
+        await locals.pb
+          .collection("users")
+          .authWithPassword(body.email, body.password);
+      } catch (err) {
         return invalid(400, {
-          name,
           incorrectLogin: true,
           errorMessage:
-            "Die Kombination aus Benutzername und Passwort ist ungültig.",
-          register: false,
+            "Die Kombination aus Passwort und E-Mail existiert nicht.",
         });
       }
+      // @ts-ignore
+      throw redirect(303, "/?modal=login");
     } else {
-      if (name == "") {
+      if (body.email == "") {
         return invalid(400, {
-          name,
-          missingName: true,
-          errorMessage: "Bitte gib einen Namen an.",
+          missingMail: true,
+          errorMessage: "Bitte gib eine E-Mail an.",
           register: false,
         });
       } else {
         return invalid(400, {
-          name,
           missingPassword: true,
           errorMessage: "Bitte gib ein Passwort an.",
           register: false,
@@ -56,56 +33,86 @@ export const actions = {
       }
     }
   },
-  register: async ({ cookies, request }) => {
-    const data = await request.formData();
-    const name = data.get("name");
-    const password = data.get("password");
-    const checkPassword = data.get("checkPassword");
-    const check = data.get("check");
+  register: async ({ locals, request }) => {
+    const body = Object.fromEntries(await request.formData());
 
-    if (name != "" && password != "" && checkPassword != "" && check) {
-      if (password == checkPassword) {
-        var stringName = name?.toString();
-        // @ts-ignore
-        cookies.set("sessionid", stringName);
-        cookies.set("registered", "true");
-        user.set({ name: stringName, sessionid: stringName });
-        throw redirect(303, "/");
+    if (
+      body.email != "" &&
+      body.password != "" &&
+      body.checkPassword != "" &&
+      body.check &&
+      body.name != ""
+    ) {
+      if (body.password == body.checkPassword) {
+        if (body.password.toString().length >= 8) {
+          const data = {
+            username: body.name,
+            email: body.email,
+            emailVisibility: true,
+            password: body.password,
+            passwordConfirm: body.password,
+          };
+          var result;
+          try {
+            result = await locals.pb.collection("users").create(data);
+            console.log(result);
+
+            const authData = await locals.pb
+              .collection("users")
+              .authWithPassword(body.email, body.password);
+
+            console.log(authData);
+          } catch (err) {
+            console.log(err);
+            return invalid(400, {
+              errorMessage: "Konnte nicht registriert werden:\n",
+            });
+          }
+
+          throw redirect(303, "/?modal=register");
+        } else {
+          return invalid(400, {
+            notTheSamePassword: true,
+            errorMessage: "Das Passwort muss mindestens 8 Zeichen lang sein.",
+            register: true,
+          });
+        }
       } else {
         return invalid(400, {
-          name,
           notTheSamePassword: true,
           errorMessage: "Die Passwörter stimmen nicht überein.",
           register: true,
         });
       }
     } else {
-      if (name == "") {
+      if (body.email == "") {
         return invalid(400, {
-          name,
-          missingName: true,
-          errorMessage: "Bitte gib einen Namen an.",
+          missingMail: true,
+          errorMessage: "Bitte gib eine E-Mail an.",
           register: true,
         });
-      } else if (password == "") {
+      } else if (body.password == "") {
         return invalid(400, {
-          name,
           missingPassword: true,
           errorMessage: "Bitte gib ein Passwort an.",
           register: true,
         });
-      } else if (checkPassword == "") {
+      } else if (body.checkPassword == "") {
         return invalid(400, {
-          name,
           missingPasswordCheck: true,
           errorMessage: "Bitte gib das Passwort zwei mal an.",
           register: true,
         });
-      } else {
+      } else if (!body.check) {
         return invalid(400, {
-          name,
           missingCheck: true,
           errorMessage: "Du musst diene Seele verkaufen.",
+          register: true,
+        });
+      } else {
+        return invalid(400, {
+          missingName: true,
+          errorMessage: "Bitte gib einen Namen an.",
           register: true,
         });
       }

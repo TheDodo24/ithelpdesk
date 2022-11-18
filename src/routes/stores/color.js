@@ -1,7 +1,11 @@
 import { readable } from "svelte/store";
 
-export const backgroundColor = readable("red", function start(set) {
+export const backgroundColor = readable(null, (set) => {
+  set("red");
+
+  var index = 1;
   let colors = [
+    "red",
     "orange",
     "amber",
     "emerald",
@@ -22,19 +26,53 @@ export const backgroundColor = readable("red", function start(set) {
     "amber",
     "orange",
   ];
-  let index = 1;
+
   const interval = setInterval(() => {
     set(colors[index]);
     index++;
-    if (index > colors.length - 1) {
+    if (index >= colors.length) {
       index = 0;
     }
   }, 1000 * 60);
 
-  return function stop() {
-    clearInterval(interval);
-  };
+  return () => clearInterval(interval);
 });
+
+// function start(set) {
+//   let colors = [
+//     "orange",
+//     "amber",
+//     "emerald",
+//     "teal",
+//     "cyan",
+//     "sky",
+//     "indigo",
+//     "violet",
+//     "purple",
+//     "fuchsia",
+//     "purple",
+//     "violet",
+//     "indigo",
+//     "sky",
+//     "cyan",
+//     "teal",
+//     "emerald",
+//     "amber",
+//     "orange",
+//   ];
+//   let index = 1;
+//   const interval = setInterval(() => {
+//     set(colors[index]);
+//     index++;
+//     if (index > colors.length - 1) {
+//       index = 0;
+//     }
+//   }, 1000 * 60);
+
+//   return function stop() {
+//     clearInterval(interval);
+//   };
+// }
 
 // let color = "bg-red-500";
 // let colors = [

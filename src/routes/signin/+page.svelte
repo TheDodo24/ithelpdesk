@@ -7,17 +7,18 @@ import { scale } from "svelte/transition";
 /** @type {import('./$types').ActionData} */ export let form;
 
 var errorMessage = form?.errorMessage || "";
-var errorName = form?.incorrectLogin || form?.missingName;
+var errorMail = form?.incorrectLogin || form?.missingMail;
 var errorPassword =
   form?.incorrectLogin || form?.missingPassword || form?.notTheSamePassword;
 var errorCheckPassword = form?.missingPasswordCheck || form?.notTheSamePassword;
+var errorName = form?.missingName;
 var checkError = form?.missingCheck;
 var op = form?.register;
 console.log(op);
 </script>
 
 <div class="flex h-screen w-screen content-center items-center justify-center">
-  <div class="card w-96 bg-base-100 shadow-xl">
+  <div class="card w-96 bg-base-300 shadow-xl">
     <div class="card-body items-center">
       <div class="btn-group">
         <button
@@ -30,11 +31,11 @@ console.log(op);
       <form method="post" action="{!op ? '?/login' : '?/register'}">
         <div class="form-control mt-5 grid w-full gap-y-5">
           <input
-            type="text"
-            name="name"
-            placeholder="Nutzername"
-            on:click="{() => (errorName = false)}"
-            class="input input-bordered {errorName
+            type="{!op ? 'text' : 'email'}"
+            name="email"
+            placeholder="{!op ? 'E-Mail/Benutzername' : 'E-Mail'}"
+            on:click="{() => (errorMail = false)}"
+            class="input input-bordered {errorMail
               ? 'input-error'
               : 'input-primary'} w-full" />
           <input
@@ -59,6 +60,21 @@ console.log(op);
               placeholder="Passwort wiederholen"
               on:click="{() => (errorCheckPassword = false)}"
               class="input input-bordered {errorCheckPassword
+                ? 'input-error'
+                : 'input-primary'} w-full" />
+            <input
+              type="text"
+              name="name"
+              transition:scale="{{
+                duration: 500,
+                delay: 0,
+                opacity: 0.2,
+                start: 0.1,
+                easing: quintOut,
+              }}"
+              on:click="{() => (errorName = false)}"
+              placeholder="Benutzername"
+              class="input input-bordered {errorName
                 ? 'input-error'
                 : 'input-primary'} w-full" />
             <label
