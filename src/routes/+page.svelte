@@ -127,15 +127,15 @@ console.log("store " + JSON.stringify($storeUser));
     <div class="mx-5 mb-5 text-gray-50">
       <div class="grid grid-cols-3 gap-10">
         <div>
-          <Box clazz="h-auto content-around bg-{$backgroundColor}-500">
-            <h1 class="mx-5 mt-5 text-6xl font-bold">
+          <Box clazz="mt-5 h-auto content-around bg-{$backgroundColor}-500">
+            <h1 class="text-6xl font-bold">
               {formatter.format($time)}
             </h1>
-            <h2 class="mx-5 mb-5 text-3xl">{dayFormatter.format($time)}</h2>
+            <h2 class="text-3xl">{dayFormatter.format($time)}</h2>
           </Box>
-          <Box clazz="h-auto items-center bg-{$backgroundColor}-500">
+          <Box clazz="mt-5 h-auto items-center bg-{$backgroundColor}-500">
             {#if quoteJson["text"] != ""}
-              <div class="mx-5 my-5 grid grid-cols-2">
+              <div class="grid grid-cols-2">
                 <p class="col-span-2 mx-3 text-sm">
                   {quoteJson["text"]}
                 </p>
@@ -149,40 +149,36 @@ console.log("store " + JSON.stringify($storeUser));
               </div>
             {/if}
           </Box>
-          <Box clazz="h-auto bg-{$backgroundColor}-500">
+          <Box clazz="mt-5 h-auto bg-{$backgroundColor}-500">
             {#if $storeUser}
-              <div class="my-5 content-around">
-                <p class="mx-5 text-xl">Angemeldet als</p>
-                <p class="mx-5 text-5xl font-bold">{$storeUser["username"]}</p>
-                <div class="mx-5">
-                  <p><i class="fa-solid fa-ranking-star mr-2"></i>Ober Noob</p>
-                  <p><i class="fa-solid fa-medal mr-2"></i> -10000</p>
-                </div>
+              <div class="content-around">
+                <p class="text-xl">Angemeldet als</p>
+                <p class="text-5xl font-bold">{$storeUser["username"]}</p>
+                <p><i class="fa-solid fa-ranking-star mr-2"></i>Ober Noob</p>
+                <p><i class="fa-solid fa-medal mr-2"></i> -10000</p>
               </div>
             {:else}
-              <div class="my-5">
-                <p class="mx-5 text-3xl">Du bist nicht angemeldet</p>
-                <a href="/signin" class="mx-5 mt-8 text-xl underline"
-                  >Anmelden<i class="fa-solid fa-arrow-right ml-2"></i></a>
-              </div>
+              <p class="text-3xl">Du bist nicht angemeldet</p>
+              <a href="/signin" class="mt-8 text-xl underline"
+                >Anmelden<i class="fa-solid fa-arrow-right ml-2"></i></a>
             {/if}
           </Box>
-          <Box clazz="h-auto content-around bg-{$backgroundColor}-500">
-            <p class="ml-5 mt-5 text-2xl font-bold underline">Deine Anfragen</p>
-            <ul class="my-5 ml-5">
+          <Box clazz="mt-5 h-auto content-around bg-{$backgroundColor}-500">
+            <p class="text-2xl font-bold underline">Deine Anfragen</p>
+            <ul class="mt-2">
               <li>Wieso geht das nicht?</li>
             </ul>
           </Box>
         </div>
         <div>
-          <Box clazz="h-auto bg-{$backgroundColor}-500">
-            <h1 class="ml-5 mt-5 text-2xl font-bold">Bild des Tages</h1>
-            <div class="my-5 flex justify-center">
+          <Box clazz="mt-5 h-auto bg-{$backgroundColor}-500">
+            <h1 class="text-2xl font-bold">Bild des Tages</h1>
+            <div class="mt-5 flex flex-row justify-center">
               {#if $potd != ""}
                 <!-- svelte-ignore a11y-img-redundant-alt -->
-                <img class="w-10/12" src="{$potd}" alt="Picture of the day" />
+                <img src="{$potd}" alt="Picture of the day" />
               {:else}
-                <div class="mt-5 flex items-center justify-end">
+                <div class="flex justify-center">
                   <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
                     <circle
                       class="opacity-0"
@@ -200,81 +196,79 @@ console.log("store " + JSON.stringify($storeUser));
                       data-darkreader-inline-fill=""
                       style="--darkreader-inline-fill:currentColor;"></path>
                   </svg>
-                  <p class="ml-5">Lade NASA POTD ...</p>
+                  <p class="ml-5 mt-10 place-self-center">Lade NASA POTD ...</p>
                 </div>
               {/if}
             </div>
           </Box>
-          <Box clazz="h-auto bg-{$backgroundColor}-500">
-            <div class="my-5 ml-5">
-              <h1 class="text-2xl font-bold">Scoreboard</h1>
-              <ul class="ml-5 mt-2 list-inside list-decimal">
-                <li>Hallo</li>
-                <li>test</li>
-                <li>Hallo</li>
-                <li>test</li>
-                <li>Hallo</li>
-                <li>test</li>
-              </ul>
-            </div>
+          <Box clazz="mt-5 h-auto bg-{$backgroundColor}-500">
+            <h1 class="text-2xl font-bold">Scoreboard</h1>
+            <ul class="ml-5 mt-2 list-inside list-decimal">
+              <li>Hallo</li>
+              <li>test</li>
+              <li>Hallo</li>
+              <li>test</li>
+              <li>Hallo</li>
+              <li>test</li>
+            </ul>
           </Box>
         </div>
         <div>
           <Box
-            clazz="h-auto flex justify-end items-center text-right place-self-end bg-{$backgroundColor}-500">
-            <div class="my-5 mr-5">
-              {#if Object.keys($weatherJson).length > 0}
-                <img
-                  class="w-28 place-self-end"
-                  src="{$weatherJson['weatherIcon']}"
-                  alt="Weather" />
-                <h1 class="text-2xl font-bold">
-                  {$weatherJson["weatherText"]} - {$weatherJson["temperature"][
-                    "value"
-                  ]}°C
-                </h1>
-                <h1 class="text-xl">
-                  <i class="fa-solid fa-temperature-high"></i><span class="ml-5"
-                    >{$weatherJson["temperature"]["max"]}°C</span>
-                  |
-                  <i class="fa-solid fa-temperature-low ml-5"></i><span
-                    class="ml-2">{$weatherJson["temperature"]["min"]}°C</span>
-                </h1>
-                <h1 class="text-xl">
-                  <i class="fa-solid fa-wind mr-5"></i>{$weatherJson["wind"][
-                    "speed"
-                  ]}km/h |
-                  <i class="fa-solid fa-compass ml-5 mr-2"></i>{$weatherJson[
-                    "wind"
-                  ]["degrees"]}°
-                </h1>
-              {:else}
-                <div class="mt-5 flex items-center justify-end">
-                  <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
-                    <circle
-                      class="opacity-0"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      stroke-width="4"
-                      data-darkreader-inline-stroke=""
-                      style="--darkreader-inline-stroke:currentColor;"></circle>
-                    <path
-                      class="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      data-darkreader-inline-fill=""
-                      style="--darkreader-inline-fill:currentColor;"></path>
-                  </svg>
-                  <p class="ml-5">Lade Wetterdaten für Ditzingen...</p>
-                </div>
-              {/if}
-            </div>
+            clazz="mt-5 h-auto flex justify-end items-center text-right place-self-end bg-{$backgroundColor}-500">
+            {#if Object.keys($weatherJson).length > 0}
+              <img
+                class="w-28 place-self-end"
+                src="{$weatherJson['weatherIcon']}"
+                alt="Weather" />
+              <h1 class="text-2xl font-bold">
+                {$weatherJson["weatherText"]} - {$weatherJson["temperature"][
+                  "value"
+                ]}°C
+              </h1>
+              <h1 class="text-xl">
+                <i class="fa-solid fa-temperature-high"></i><span class="ml-5"
+                  >{$weatherJson["temperature"]["max"]}°C</span>
+                |
+                <i class="fa-solid fa-temperature-low ml-5"></i><span
+                  class="ml-2">{$weatherJson["temperature"]["min"]}°C</span>
+              </h1>
+              <h1 class="text-xl">
+                <i class="fa-solid fa-wind mr-5"></i>{$weatherJson["wind"][
+                  "speed"
+                ]}km/h |
+                <i class="fa-solid fa-compass ml-5 mr-2"></i>{$weatherJson[
+                  "wind"
+                ]["degrees"]}°
+              </h1>
+            {:else}
+              <div class="flex justify-center">
+                <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
+                  <circle
+                    class="opacity-0"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                    data-darkreader-inline-stroke=""
+                    style="--darkreader-inline-stroke:currentColor;"></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    data-darkreader-inline-fill=""
+                    style="--darkreader-inline-fill:currentColor;"></path>
+                </svg>
+                <p class="ml-5 mt-10 place-self-center">
+                  Lade Wetterdaten für Ditzingen ...
+                </p>
+              </div>
+            {/if}
           </Box>
           <Box
-            clazz="h-auto flex justify-end items-center text-right place-self-end bg-{$backgroundColor}-500">
-            <div class="my-5 mx-5 whitespace-pre-line">
+            clazz="mt-5 h-auto flex justify-end items-center text-right place-self-end bg-{$backgroundColor}-500">
+            <div class="whitespace-pre-line">
               <h1 class="text-2xl font-bold">
                 Aramark-Menü am {dateFormatter.format($time)}
               </h1>
@@ -299,7 +293,7 @@ console.log("store " + JSON.stringify($storeUser));
                         ]}</span>
                     </li>
                   {:else}
-                    <div class="mt-5 flex items-center justify-end">
+                    <div class="flex justify-center">
                       <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
                         <circle
                           class="opacity-0"
@@ -318,7 +312,9 @@ console.log("store " + JSON.stringify($storeUser));
                           data-darkreader-inline-fill=""
                           style="--darkreader-inline-fill:currentColor;"></path>
                       </svg>
-                      <p class="ml-5">Lade Aramark Menü...</p>
+                      <p class="ml-5 mt-10 place-self-center">
+                        Lade Aramark Menü ...
+                      </p>
                     </div>
                   {/each}
                 </ul>

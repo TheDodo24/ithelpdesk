@@ -6,6 +6,8 @@ export let clazz;
 </script>
 
 <div
-  class="box-border block w-auto {clazz} mt-5 grid rounded-2xl shadow-lg shadow-slate-800 hover:shadow-gray-700">
-  <slot />
+  class="box-border block w-auto {clazz} grid rounded-2xl shadow-lg hover:shadow-gray-700">
+  <div class="my-5 mx-5">
+    <slot />
+  </div>
 </div>
