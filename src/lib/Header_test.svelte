@@ -1,14 +1,13 @@
 <script>
 // @ts-nocheck
-
-import { backgroundColor } from "../routes/stores/color.js";
 import logo from "$lib/logo.png";
 
 export var user;
+export var bg;
 </script>
 
 <div
-  class="navbar bg-{$backgroundColor}-500 mx-5 mt-5 w-auto rounded-2xl text-neutral-content">
+  class="navbar bg-{bg}-500 mx-5 mt-5 w-auto rounded-2xl text-neutral-content">
   <div class="flex-1">
     <a href="/"><img src="{logo}" class="w-60" alt="Logo" /></a>
   </div>

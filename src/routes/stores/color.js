@@ -1,8 +1,6 @@
 import { readable } from "svelte/store";
 
-export const backgroundColor = readable(null, (set) => {
-  set("red");
-
+export const backgroundColor = readable("red", (set) => {
   var index = 1;
   let colors = [
     "red",

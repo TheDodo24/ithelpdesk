@@ -120,18 +120,20 @@ console.log("store " + JSON.stringify($storeUser));
 
 <div class="static w-screen">
   <div class="absolute">
-    <Header user="{$storeUser ? $storeUser['username'] : undefined}" />
+    <Header
+      bg="{$backgroundColor}"
+      user="{$storeUser ? $storeUser['username'] : undefined}" />
 
     <div class="mx-5 mb-5 text-gray-50">
       <div class="grid grid-cols-3 gap-10">
         <div>
-          <Box clazz="h-auto content-around">
+          <Box clazz="h-auto content-around bg-{$backgroundColor}-500">
             <h1 class="mx-5 mt-5 text-6xl font-bold">
               {formatter.format($time)}
             </h1>
             <h2 class="mx-5 mb-5 text-3xl">{dayFormatter.format($time)}</h2>
           </Box>
-          <Box clazz="h-auto items-center">
+          <Box clazz="h-auto items-center bg-{$backgroundColor}-500">
             {#if quoteJson["text"] != ""}
               <div class="mx-5 my-5 grid grid-cols-2">
                 <p class="col-span-2 mx-3 text-sm">
@@ -147,7 +149,7 @@ console.log("store " + JSON.stringify($storeUser));
               </div>
             {/if}
           </Box>
-          <Box clazz="h-auto">
+          <Box clazz="h-auto bg-{$backgroundColor}-500">
             {#if $storeUser}
               <div class="my-5 content-around">
                 <p class="mx-5 text-xl">Angemeldet als</p>
@@ -165,7 +167,7 @@ console.log("store " + JSON.stringify($storeUser));
               </div>
             {/if}
           </Box>
-          <Box clazz="h-auto content-around">
+          <Box clazz="h-auto content-around bg-{$backgroundColor}-500">
             <p class="ml-5 mt-5 text-2xl font-bold underline">Deine Anfragen</p>
             <ul class="my-5 ml-5">
               <li>Wieso geht das nicht?</li>
@@ -173,7 +175,7 @@ console.log("store " + JSON.stringify($storeUser));
           </Box>
         </div>
         <div>
-          <Box clazz="h-auto">
+          <Box clazz="h-auto bg-{$backgroundColor}-500">
             <h1 class="ml-5 mt-5 text-2xl font-bold">Bild des Tages</h1>
             <div class="my-5 flex justify-center">
               {#if $potd != ""}
@@ -183,7 +185,7 @@ console.log("store " + JSON.stringify($storeUser));
                 <div class="mt-5 flex items-center justify-end">
                   <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
                     <circle
-                      class="opacity-25"
+                      class="opacity-0"
                       cx="12"
                       cy="12"
                       r="10"
@@ -203,7 +205,7 @@ console.log("store " + JSON.stringify($storeUser));
               {/if}
             </div>
           </Box>
-          <Box clazz="h-auto">
+          <Box clazz="h-auto bg-{$backgroundColor}-500">
             <div class="my-5 ml-5">
               <h1 class="text-2xl font-bold">Scoreboard</h1>
               <ul class="ml-5 mt-2 list-inside list-decimal">
@@ -219,7 +221,7 @@ console.log("store " + JSON.stringify($storeUser));
         </div>
         <div>
           <Box
-            clazz="h-auto flex justify-end items-center text-right place-self-end">
+            clazz="h-auto flex justify-end items-center text-right place-self-end bg-{$backgroundColor}-500">
             <div class="my-5 mr-5">
               {#if Object.keys($weatherJson).length > 0}
                 <img
@@ -250,7 +252,7 @@ console.log("store " + JSON.stringify($storeUser));
                 <div class="mt-5 flex items-center justify-end">
                   <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
                     <circle
-                      class="opacity-25"
+                      class="opacity-0"
                       cx="12"
                       cy="12"
                       r="10"
@@ -271,7 +273,7 @@ console.log("store " + JSON.stringify($storeUser));
             </div>
           </Box>
           <Box
-            clazz="h-auto flex justify-end items-center text-right place-self-end">
+            clazz="h-auto flex justify-end items-center text-right place-self-end bg-{$backgroundColor}-500">
             <div class="my-5 mx-5 whitespace-pre-line">
               <h1 class="text-2xl font-bold">
                 Aramark-Menü am {dateFormatter.format($time)}
@@ -300,7 +302,7 @@ console.log("store " + JSON.stringify($storeUser));
                     <div class="mt-5 flex items-center justify-end">
                       <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
                         <circle
-                          class="opacity-25"
+                          class="opacity-0"
                           cx="12"
                           cy="12"
                           r="10"
@@ -339,12 +341,14 @@ console.log("store " + JSON.stringify($storeUser));
   <div class="modal {modal ? 'modal-open' : ''}">
     <div class="modal-box relative items-center text-center">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <label
-        for="my-modal-3"
-        class="btn btn-circle btn-sm absolute right-2 top-2"
-        on:click="{() => {
-          modal = false;
-        }}"><a href="/">✕</a></label>
+      <a href="/"
+        ><label
+          for="my-modal-3"
+          class="btn btn-circle btn-sm absolute right-2 top-2"
+          on:click="{() => {
+            modal = false;
+          }}">✕</label
+        ></a>
       <svg
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
