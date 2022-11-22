@@ -7,78 +7,66 @@
 
 <script>
 import { storeUser } from "../stores/user.js";
-import { backgroundColor } from "../stores/color.js";
 import Header from "$lib/Header_test.svelte";
 import Box from "$lib/Box.svelte";
+import { goto } from "$app/navigation";
 
 /** @type {import('./$types').PageData} */ export let data;
 if (data.user) {
   if (!$storeUser) storeUser.set(data.user);
 }
-
-const tickets = [
-  {
-    title: "Test",
-    author: "Dodo",
-    finished: false,
-    content:
-      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,",
-    created: "21.11.2022",
-  },
-  {
-    title: "Hilfe",
-    author: "Dodo",
-    finished: true,
-    content:
-      "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,",
-    created: "21.11.2022",
-  },
-];
+var modal = data.modal;
 </script>
 
 <div class="absolute w-full">
   <div class="mb-5 text-gray-50">
-    <Header
-      bg="{$backgroundColor}"
-      user="{$storeUser ? $storeUser['username'] : undefined}" />
+    <Header user="{$storeUser ? $storeUser['username'] : undefined}" />
   </div>
-  <div class="flex flex-row  justify-center">
-    <div
-      class="stats shadow bg-{$backgroundColor}-500 text-white shadow-xl hover:shadow-gray-700">
-      <div class="stat place-items-center">
-        <div class="stat-title">Anfragen</div>
-        <div class="stat-value">{tickets.length}</div>
-      </div>
-
-      <div class="stat place-items-center">
-        <div class="stat-title">... davon bearbeitet</div>
-        <div class="stat-value">
-          {tickets.filter((ticket) => ticket.finished).length}
+  <div class="flex flex-col">
+    <div class="flex justify-center">
+      <div
+        class="stats bg-purple-700 text-white shadow-xl hover:shadow-gray-700">
+        <div class="stat place-items-center">
+          <div class="stat-title">Anfragen</div>
+          <div class="stat-value">{data.records.length}</div>
         </div>
-      </div>
 
-      <div class="stat place-items-center">
-        <div class="stat-figure">
-          <div
-            class="radial-progress"
-            style="--value:{(tickets.filter((ticket) => ticket.finished)
-              .length /
-              tickets.length) *
-              100};">
-            {Math.round(
-              (tickets.filter((ticket) => ticket.finished).length /
-                tickets.length) *
-                10000
-            ) / 100}%
+        <div class="stat place-items-center">
+          <div class="stat-title">... davon bearbeitet</div>
+          <div class="stat-value">
+            {data.records.filter((ticket) => ticket.finished).length}
+          </div>
+        </div>
+
+        <div class="stat place-items-center">
+          <div class="stat-figure">
+            <div
+              class="radial-progress"
+              style="--value:{(data.records.filter((ticket) => ticket.finished)
+                .length /
+                data.records.length) *
+                100};">
+              {Math.round(
+                (data.records.filter((ticket) => ticket.finished).length /
+                  (data.records.length == 0 ? 1 : data.records.length)) *
+                  10000
+              ) / 100}%
+            </div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="mr-5 flex justify-end">
+      <a href="/new-ticket"
+        ><button class="btn bg-purple-800 text-white hover:bg-purple-900"
+          >+ Anfrage stellen</button
+        ></a>
     </div>
   </div>
   <div class="divider"></div>
   <div class="mt-10 mb-5">
     <div class="mx-5">
-      <Box margin="{false}" clazz="bg-{$backgroundColor}-700">
+      <Box margin="{false}" clazz="bg-purple-800">
         <div class="flex flex-row text-white">
           <div class="flex-1 place-self-center">Titel</div>
           <div class=" flex-none place-self-center">
@@ -93,19 +81,21 @@ const tickets = [
     </div>
   </div>
   <div class="mx-5 mt-9 text-white">
-    {#each tickets as ticket}
-      <Box margin="{true}" clazz="bg-{$backgroundColor}-500 my-5">
+    {#each data.records as record}
+      <Box margin="{true}" clazz="bg-purple-700 my-5">
         <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-        <div class="collapse collapse-arrow" tabindex="0">
+        <div class="collapse-arrow collapse" tabindex="0">
           <input type="checkbox" class="peer" />
           <div class="collapse-title flex flex-row items-center">
-            <div class="ml-7 flex-1 text-3xl font-bold">{ticket.title}</div>
+            <div class="ml-7 flex-1 text-3xl font-bold">{record.title}</div>
             <div class=" flex-none">
               <div class="grid grid-flow-col gap-5">
-                <p>{ticket.created}</p>
-                <p>{ticket.author}</p>
                 <p>
-                  <i class="fa-solid fa-{ticket.finished ? 'check' : 'x'}"></i>
+                  {record.created}
+                </p>
+                <p>{record.author}</p>
+                <p>
+                  <i class="fa-solid fa-{record.finished ? 'check' : 'x'}"></i>
                 </p>
               </div>
             </div>
@@ -114,7 +104,7 @@ const tickets = [
             <div class="divider"></div>
             <div class="text-2xl font-bold">Nachricht:</div>
             <p>
-              {ticket.content}
+              {record.content}
             </p>
             <div class="divider"></div>
             <a href="#" class="mr-8 place-self-end font-bold"
@@ -124,6 +114,51 @@ const tickets = [
           </div>
         </div>
       </Box>
+    {:else}
+      <p class="text-3xl font-bold">Es wurden keine Tickets erstellt.</p>
     {/each}
   </div>
 </div>
+
+{#if modal}
+  <div class="modal {modal ? 'modal-open' : ''}">
+    <div class="modal-box relative items-center text-center">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <a href="/anfragen"
+        ><label
+          for="my-modal-3"
+          class="btn btn-circle btn-sm absolute right-2 top-2"
+          on:click="{() => {
+            modal = false;
+          }}">✕</label
+        ></a>
+      <svg
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 130.2 130.2">
+        <circle
+          class="path circle"
+          fill="none"
+          stroke="#73AF55"
+          stroke-width="6"
+          stroke-miterlimit="10"
+          cx="65.1"
+          cy="65.1"
+          r="62.1"></circle>
+        <polyline
+          class="path check"
+          fill="none"
+          stroke="#73AF55"
+          stroke-width="6"
+          stroke-linecap="round"
+          stroke-miterlimit="10"
+          points="100.2,40.2 51.5,88.8 29.8,67.5 "></polyline>
+      </svg>
+      <h3 class="py-4 text-lg font-bold">Ticket erfolgreich erstellt</h3>
+      <p class="">
+        Dein Ticket wurde erfolgreich erstellt und wird sobald wie möglich
+        bearbeitet.
+      </p>
+    </div>
+  </div>
+{/if}

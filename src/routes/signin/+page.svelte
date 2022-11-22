@@ -22,10 +22,12 @@ var modal = false;
     <div class="card-body items-center">
       <div class="btn-group">
         <button
-          class="btn {!op ? 'btn-active' : ''}"
+          class="btn {!op
+            ? 'bg-purple-800'
+            : ''} text-white hover:bg-purple-900"
           on:click="{() => (op = false)}">Anmelden</button>
         <button
-          class="btn {op ? 'btn-active' : ''}"
+          class="btn {op ? 'bg-purple-800' : ''} text-white hover:bg-purple-900"
           on:click="{() => (op = true)}">Registrieren</button>
       </div>
       <form
@@ -103,7 +105,8 @@ var modal = false;
           {#if errorMessage != ""}
             <p>{errorMessage}</p>
           {/if}
-          <button class="btn btn-outline btn-primary items-center"
+          <button
+            class="btn items-center bg-purple-800 text-white hover:bg-purple-900"
             ><i class="fa-solid fa-paper-plane mr-4"></i> Absenden</button>
         </div>
       </form>

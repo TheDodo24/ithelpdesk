@@ -6,7 +6,6 @@ import { time } from "./stores/time.js";
 import { storeUser } from "./stores/user.js";
 import { menu } from "./stores/menu.js";
 import { potd } from "./stores/potd.js";
-import { backgroundColor } from "./stores/color.js";
 import { weatherJson } from "./stores/weather.js";
 import Header from "$lib/Header_test.svelte";
 import Box from "$lib/Box.svelte";
@@ -120,20 +119,18 @@ console.log("store " + JSON.stringify($storeUser));
 
 <div class="static w-screen">
   <div class="absolute">
-    <Header
-      bg="{$backgroundColor}"
-      user="{$storeUser ? $storeUser['username'] : undefined}" />
+    <Header user="{$storeUser ? $storeUser['username'] : undefined}" />
 
     <div class="mx-5 mb-5 text-gray-50">
       <div class="grid grid-cols-3 gap-10">
         <div>
-          <Box clazz="mt-5 h-auto content-around bg-{$backgroundColor}-500">
+          <Box clazz="mt-5 h-auto content-around bg-purple-700">
             <h1 class="text-6xl font-bold">
               {formatter.format($time)}
             </h1>
             <h2 class="text-3xl">{dayFormatter.format($time)}</h2>
           </Box>
-          <Box clazz="mt-5 h-auto items-center bg-{$backgroundColor}-500">
+          <Box clazz="mt-5 h-auto items-center bg-purple-700">
             {#if quoteJson["text"] != ""}
               <div class="grid grid-cols-2">
                 <p class="col-span-2 mx-3 text-sm">
@@ -149,7 +146,7 @@ console.log("store " + JSON.stringify($storeUser));
               </div>
             {/if}
           </Box>
-          <Box clazz="mt-5 h-auto bg-{$backgroundColor}-500">
+          <Box clazz="mt-5 h-auto bg-purple-700">
             {#if $storeUser}
               <div class="content-around">
                 <p class="text-xl">Angemeldet als</p>
@@ -163,7 +160,7 @@ console.log("store " + JSON.stringify($storeUser));
                 >Anmelden<i class="fa-solid fa-arrow-right ml-2"></i></a>
             {/if}
           </Box>
-          <Box clazz="mt-5 h-auto content-around bg-{$backgroundColor}-500">
+          <Box clazz="mt-5 h-auto content-around bg-purple-700">
             <p class="text-2xl font-bold underline">Deine Anfragen</p>
             <ul class="mt-2">
               <li>Wieso geht das nicht?</li>
@@ -171,7 +168,7 @@ console.log("store " + JSON.stringify($storeUser));
           </Box>
         </div>
         <div>
-          <Box clazz="mt-5 h-auto bg-{$backgroundColor}-500">
+          <Box clazz="mt-5 h-auto bg-purple-700">
             <h1 class="text-2xl font-bold">Bild des Tages</h1>
             <div class="mt-5 flex flex-row justify-center">
               {#if $potd != ""}
@@ -201,7 +198,7 @@ console.log("store " + JSON.stringify($storeUser));
               {/if}
             </div>
           </Box>
-          <Box clazz="mt-5 h-auto bg-{$backgroundColor}-500">
+          <Box clazz="mt-5 h-auto bg-purple-700">
             <h1 class="text-2xl font-bold">Scoreboard</h1>
             <ul class="ml-5 mt-2 list-inside list-decimal">
               <li>Hallo</li>
@@ -215,7 +212,7 @@ console.log("store " + JSON.stringify($storeUser));
         </div>
         <div>
           <Box
-            clazz="mt-5 h-auto flex justify-end items-center text-right place-self-end bg-{$backgroundColor}-500">
+            clazz="mt-5 h-auto flex justify-end items-center text-right place-self-end bg-purple-700">
             {#if Object.keys($weatherJson).length > 0}
               <img
                 class="w-28 place-self-end"
@@ -267,7 +264,7 @@ console.log("store " + JSON.stringify($storeUser));
             {/if}
           </Box>
           <Box
-            clazz="mt-5 h-auto flex justify-end items-center text-right place-self-end bg-{$backgroundColor}-500">
+            clazz="mt-5 h-auto flex justify-end items-center text-right place-self-end bg-purple-700">
             <div class="whitespace-pre-line">
               <h1 class="text-2xl font-bold">
                 Aramark-Menü am {dateFormatter.format($time)}

@@ -3,11 +3,10 @@
 import logo from "$lib/logo.png";
 
 export var user;
-export var bg;
 </script>
 
 <div
-  class="navbar bg-{bg}-500 mx-5 mt-5 w-auto rounded-2xl text-neutral-content shadow-xl hover:shadow-gray-700">
+  class="navbar mx-5 mt-5 w-auto rounded-2xl bg-purple-800 text-neutral-content shadow-xl hover:shadow-gray-700">
   <div class="flex-1">
     <a href="/"><img src="{logo}" class="w-60" alt="Logo" /></a>
   </div>
