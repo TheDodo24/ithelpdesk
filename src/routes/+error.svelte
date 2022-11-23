@@ -4,11 +4,11 @@ import { page } from "$app/stores";
 
 <div class="flex h-screen w-screen content-center items-center justify-center">
   <div class="card w-96 bg-base-300 shadow-xl">
-    <div class="card-title mt-5 text-center text-5xl font-bold">
+    <div class="card-title mt-5 justify-center text-center text-5xl font-bold">
       {$page.status}
     </div>
     <div class="divider"></div>
-    <div class="card-body">
+    <div class="card-body flex justify-center">
       <img src="https://j.gifs.com/5y8xPR.gif" alt="gif" />
       <p class="mt-5 text-center text-2xl">{$page.error?.message}</p>
       <p class="text-center">

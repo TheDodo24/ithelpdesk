@@ -1,4 +1,5 @@
 import { invalid, redirect } from "@sveltejs/kit";
+import papa from "papaparse";
 
 // @ts-ignore
 export async function load({ locals }) {
@@ -20,19 +21,27 @@ export async function load({ locals }) {
 /** @type {import('./$types').Actions} */
 export const actions = {
   "post-ticket": async ({ request, locals, url }) => {
-    const body = Object.fromEntries(await request.formData());
+    const formData = await request.formData();
+    let body = Object.fromEntries(formData.entries());
     if (url.searchParams.has("user")) {
       if (body.title && body.text && body.check) {
         var user = url.searchParams.get("user");
+        var inputFiles = formData.getAll("file");
         try {
-          const data = {
-            author: user,
-            content: body.text,
-            title: body.title,
-            finished: false,
-            files: body.files ? body.files : undefined,
-          };
-          await locals.pb.collection("requests").create(data);
+          const requestFormData = new FormData();
+          requestFormData.append("author", user || "");
+          requestFormData.append(
+            "content",
+            // @ts-ignore
+            body.text.replaceAll("\n", "<br />")
+          );
+          requestFormData.append("title", body.title);
+          requestFormData.append("finished", "false");
+          for (let inputFile of inputFiles) {
+            requestFormData.append("files", inputFile);
+          }
+          // @ts-ignore
+          await locals.pb.collection("requests").create(requestFormData);
         } catch (err) {
           return invalid(400, {
             errorMessage: "Eintrag konnte nicht erstellt werden.",

@@ -1,4 +1,6 @@
 <script>
+// @ts-nocheck
+
 import { storeUser } from "../stores/user.js";
 /** @type {import('./$types').PageData} */ export let data;
 if (data.user) {
@@ -11,6 +13,7 @@ var errorMessage = form?.errorMessage;
 var errorTitle = form?.missingTitle;
 var errorText = form?.missingText;
 var errorCheck = form?.missingCheck;
+var modal = false;
 </script>
 
 <div
@@ -28,7 +31,11 @@ var errorCheck = form?.missingCheck;
         class="input input-bordered max-w-md text-white"
         disabled />
       <div class="divider"></div>
-      <form method="post" action="?/post-ticket&user={$storeUser.id}">
+      <form
+        method="post"
+        on:submit="{() => (modal = true)}"
+        enctype="multipart/form-data"
+        action="?/post-ticket&user={$storeUser.id}">
         <div class="form-control mt-5 grid gap-y-5">
           <input
             type="text"
@@ -45,11 +52,11 @@ var errorCheck = form?.missingCheck;
             on:click="{() => (errorText = false)}"
             name="text"
             placeholder="Beschreibe dein Problem"></textarea>
-          <label for="file">Zusätzliche Dateien</label>
+          <label for="file">Zusätzliche Dateien (max. 10)</label>
           <input
             type="file"
+            name="file"
             id="file"
-            name="files"
             class="file-input file-input-bordered file-input-primary max-w-md"
             multiple />
           <label class="label cursor-pointer">
@@ -82,5 +89,29 @@ var errorCheck = form?.missingCheck;
         </div>
       </form>
     </div>
+  </div>
+</div>
+
+<div class="modal {modal ? 'modal-open' : ''}">
+  <div class="modal-box relative items-center text-center">
+    <svg class="h-25 w-25 animate-spin" viewBox="0 0 24 24">
+      <circle
+        class="opacity-0"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="4"
+        data-darkreader-inline-stroke=""
+        style="--darkreader-inline-stroke:white;"></circle>
+      <path
+        class="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        data-darkreader-inline-fill=""
+        style="--darkreader-inline-fill:currentColor;"></path
+      ></svg>
+    <h3 class="py-4 text-lg font-bold">Dein Ticket wird erstellt...</h3>
+    <p class="">Bitte warte einen Augenblick.</p>
   </div>
 </div>

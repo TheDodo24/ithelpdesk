@@ -13,6 +13,12 @@ export async function load({ locals, url }) {
     for (const record of JSON.parse(JSON.stringify(records))) {
       const user = await locals.pb.collection("users").getOne(record["author"]);
       record["author"] = user["username"];
+      const files = record["files"];
+      for (let file of files) {
+        const url = locals.pb.getFileUrl(record, file);
+        files[files.indexOf(file)] = url;
+      }
+      record["files"] = files;
       let date = new Date(record["created"]);
       record["created"] = date.toLocaleDateString("de-de", {
         day: "2-digit",

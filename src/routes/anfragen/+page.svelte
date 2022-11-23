@@ -9,7 +9,6 @@
 import { storeUser } from "../stores/user.js";
 import Header from "$lib/Header_test.svelte";
 import Box from "$lib/Box.svelte";
-import { goto } from "$app/navigation";
 
 /** @type {import('./$types').PageData} */ export let data;
 if (data.user) {
@@ -104,10 +103,22 @@ var modal = data.modal;
             <div class="divider"></div>
             <div class="text-2xl font-bold">Nachricht:</div>
             <p>
-              {record.content}
+              {@html record.content}
             </p>
+            {#if record.files.length > 0}
+              <div class="divider"></div>
+              <div class="text-2xl font-bold">Dateien:</div>
+              <div class="mt-2 grid gap-5 md:grid-cols-3 lg:grid-cols-4">
+                {#each record.files as file}
+                  <a class="inline-block" href="{file}"
+                    ><i class="fa-solid fa-file mr-2"></i>{file.split("/")[
+                      file.split("/").length - 1
+                    ]}</a>
+                {/each}
+              </div>
+            {/if}
             <div class="divider"></div>
-            <a href="#" class="mr-8 place-self-end font-bold"
+            <a href="/ticket/{record.id}" class="mr-8 place-self-end font-bold"
               >Weiter zum Ticket<i
                 class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
             </a>

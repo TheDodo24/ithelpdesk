@@ -160,12 +160,33 @@ console.log("store " + JSON.stringify($storeUser));
                 >Anmelden<i class="fa-solid fa-arrow-right ml-2"></i></a>
             {/if}
           </Box>
-          <Box clazz="mt-5 h-auto content-around bg-purple-700">
-            <p class="text-2xl font-bold underline">Deine Anfragen</p>
-            <ul class="mt-2">
-              <li>Wieso geht das nicht?</li>
-            </ul>
-          </Box>
+          {#if $storeUser}
+            <Box clazz="mt-5 h-auto content-around bg-purple-700">
+              <p class="text-2xl font-bold underline">Deine Anfragen</p>
+              {#if data.tickets}
+                <ul class="mt-2 list-inside list-disc">
+                  {#each data.tickets as ticket, i}
+                    {#if i <= 8}
+                      <li>
+                        <a href="/ticket/{ticket.id}">{ticket.title}</a>
+                      </li>
+                    {/if}
+                  {/each}
+                  {#if data.tickets.length > 8}
+                    <div class="mt-2">
+                      <a href="/anfragen" class="underline"
+                        >... und {data.tickets.length - 8} weitere Tickets<i
+                          class="fa-solid fa-arrow-up-right-from-square ml-2"
+                        ></i
+                        ></a>
+                    </div>
+                  {/if}
+                </ul>
+              {:else}
+                <p class="mt-2">Du hast keine Tickets.</p>
+              {/if}
+            </Box>
+          {/if}
         </div>
         <div>
           <Box clazz="mt-5 h-auto bg-purple-700">
