@@ -5,7 +5,5 @@ import Header from "$lib/Header_test.svelte";
 </script>
 
 <div class="mb-5 w-screen text-gray-50">
-  <Header
-    bg="{$backgroundColor}"
-    user="{$storeUser ? $storeUser['username'] : undefined}" />
+  <Header user="{$storeUser ? $storeUser['username'] : undefined}" />
 </div>
