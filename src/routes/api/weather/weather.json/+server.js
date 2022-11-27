@@ -10,7 +10,6 @@ export async function GET() {
     "https://api.openweathermap.org/data/2.5/weather?lat=48.82&lon=9.06&appid=c57be652764d5d8e7fb9056d1d712348&units=metric&lang=de",
     {
       method: "GET",
-      agent: agent,
     }
   );
 

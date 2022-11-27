@@ -1,5 +1,5 @@
 <script>
-/**
+/**./stores/color.js
  * @type {any}
  */
 export let clazz;

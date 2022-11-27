@@ -1,6 +1,5 @@
 <script>
-import { storeUser } from "../stores/user.js";
-import { backgroundColor } from "../stores/color.js";
+import { storeUser } from "$lib/stores/user.js";
 import Header from "$lib/Header_test.svelte";
 </script>
 

@@ -13,7 +13,6 @@ export async function GET({ url }) {
   if (random == 0) {
     resp = await fetch("https://api.quotable.io/random?maxLength=200", {
       method: "GET",
-      agent: agent,
     });
     const res = JSON.parse(await resp.text());
     text = JSON.stringify({

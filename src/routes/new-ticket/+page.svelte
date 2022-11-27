@@ -1,7 +1,7 @@
 <script>
 // @ts-nocheck
 
-import { storeUser } from "../stores/user.js";
+import { storeUser } from "$lib/stores/user.js";
 /** @type {import('./$types').PageData} */ export let data;
 if (data.user) {
   if (!$storeUser) storeUser.set(data.user);
@@ -28,7 +28,7 @@ var modal = false;
         type="text"
         name="user"
         placeholder="{$storeUser.username}"
-        class="input input-bordered max-w-md text-white"
+        class="input-bordered input max-w-md text-white"
         disabled />
       <div class="divider"></div>
       <form
@@ -41,12 +41,12 @@ var modal = false;
             type="text"
             placeholder="Titel"
             name="title"
-            class="input input-bordered {errorTitle
+            class="input-bordered input {errorTitle
               ? 'input-error'
               : 'input-primary'} "
             on:click="{() => (errorTitle = false)}" />
           <textarea
-            class="textarea textarea-bordered {errorText
+            class="textarea-bordered textarea {errorText
               ? 'input-error'
               : 'textarea-primary'} "
             on:click="{() => (errorText = false)}"
@@ -57,7 +57,7 @@ var modal = false;
             type="file"
             name="file"
             id="file"
-            class="file-input file-input-bordered file-input-primary max-w-md"
+            class="file-input-bordered file-input-primary file-input max-w-md"
             multiple />
           <label class="label cursor-pointer">
             <span class="label-text text-lg"
@@ -83,7 +83,7 @@ var modal = false;
               Übersicht</a>
           </div>
           <div class="mr-5">
-            <button class="btn btn-primary items-center"
+            <button class="btn-primary btn items-center"
               ><i class="fa-solid fa-paper-plane mr-4"></i> Absenden</button>
           </div>
         </div>

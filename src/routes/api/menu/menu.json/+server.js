@@ -1,22 +1,20 @@
-import fetch from "node-fetch";
 import { HttpsProxyAgent } from "hpagent";
+import fetch from "node-fetch";
 
 export async function GET() {
   let agent = new HttpsProxyAgent({
     rejectUnauthorized: false,
     proxy: "http://10.49.26.65:8080",
   });
-  const res = await fetch("https://aramarkio.vercel.app/api/menu/menu.json", {
-    method: "GET",
-    agent: agent,
-  });
+  const res = await fetch("https://aramarkio.xenrod.de/api/menu/menu.json");
+  let text = await res.text();
 
-  let json = JSON.parse(await res.text());
-  if (res.status == 200 && json.length > 0) {
+  let json = JSON.parse(text);
+  if (res.status == 200) {
     let menus = json.filter(function filter(
       /** @type {{ [x: string]: any; }} */ item
     ) {
-      return item["day"] == 0;
+      return item["day"] == 1;
     });
 
     menus.forEach((/** @type {{ [x: string]: string; }} */ element) => {

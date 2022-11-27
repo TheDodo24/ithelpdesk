@@ -2,15 +2,15 @@
 // @ts-nocheck
 
 // @ts-ignore
-import { time } from "./stores/time.js";
-import { storeUser } from "./stores/user.js";
-import { menu } from "./stores/menu.js";
-import { potd } from "./stores/potd.js";
-import { weatherJson } from "./stores/weather.js";
+import { time } from "$lib/stores/time.js";
+import { storeUser } from "$lib/stores/user.js";
+import { menu } from "$lib/stores/menu.js";
+import { potd } from "$lib/stores/potd.js";
+import { weatherJson } from "$lib/stores/weather.js";
+import { tickets } from "$lib/stores/tickets.js";
 import Header from "$lib/Header_test.svelte";
 import Box from "$lib/Box.svelte";
 import { onMount } from "svelte";
-import { goto } from "$app/navigation";
 //import style from "./startpage.css";
 
 /** @type {import('./$types').PageData} */ export let data;
@@ -43,19 +43,14 @@ onMount(async () => {
   getWeather(window);
   getPOTD(window);
   getMenu(window);
+  getTickets(window);
 });
 
 /**
  * @param {Window & typeof globalThis} window
  */
 async function getQuotes(window) {
-  const url =
-    window.location.protocol +
-    "//" +
-    window.location.hostname +
-    ":" +
-    window.location.port +
-    "/api/quotes/quotes.json";
+  const url = "/api/quotes/quotes.json";
   const resp = await fetch(url, {
     method: "GET",
   });
@@ -64,57 +59,39 @@ async function getQuotes(window) {
 }
 
 async function getMenu(window) {
-  const url =
-    window.location.protocol +
-    "//" +
-    window.location.hostname +
-    ":" +
-    window.location.port +
-    "/api/menu/menu.json";
+  const url = "/api/menu/menu.json";
   let res;
   res = await fetch(url, {
     method: "GET",
   });
   let text = await res.text();
   if (res.status == 200) {
-    menu.set(JSON.parse(text));
+    $menu = JSON.parse(text);
   } else {
-    menu.set("not-found");
+    $menu = "not-found";
   }
 }
 
 async function getPOTD(window) {
-  const imgres = await fetch(
-    window.location.protocol +
-      "//" +
-      window.location.hostname +
-      ":" +
-      window.location.port +
-      "/api/picture/image.json"
-  );
+  const imgres = await fetch("/api/picture/image.json");
 
-  potd.set(JSON.parse(await imgres.text())["src"]);
+  $potd = JSON.parse(await imgres.text())["src"];
 }
 
 async function getWeather(window) {
-  const weatherRes = await fetch(
-    window.location.protocol +
-      "//" +
-      window.location.hostname +
-      ":" +
-      window.location.port +
-      "/api/weather/weather.json"
-  );
-  weatherJson.set(JSON.parse(await weatherRes.text()));
+  const weatherRes = await fetch("/api/weather/weather.json");
+  $weatherJson = JSON.parse(await weatherRes.text());
 }
-console.log("data: " + JSON.stringify(data));
+
+async function getTickets(window) {
+  const ticketRes = await fetch("api/requests/list.json");
+  $tickets = JSON.parse(await ticketRes.text());
+}
 if (data.user) {
   storeUser.set(data.user);
-  console.log("data " + JSON.stringify($storeUser));
 } else {
   storeUser.set(undefined);
 }
-console.log("store " + JSON.stringify($storeUser));
 </script>
 
 <div class="static w-screen">
@@ -161,30 +138,55 @@ console.log("store " + JSON.stringify($storeUser));
             {/if}
           </Box>
           {#if $storeUser}
-            <Box clazz="mt-5 h-auto content-around bg-purple-700">
+            <Box clazz="mt-5 h-auto bg-purple-700">
               <p class="text-2xl font-bold underline">Deine Anfragen</p>
-              {#if data.tickets}
+              {#if $tickets}
                 <ul class="mt-2 list-inside list-disc">
-                  {#each data.tickets as ticket, i}
+                  {#each Object.keys($tickets) as key, i}
                     {#if i <= 8}
                       <li>
-                        <a href="/ticket/{ticket.id}">{ticket.title}</a>
+                        <a href="/ticket/{key}">{$tickets[key].title}</a>
                       </li>
                     {/if}
                   {/each}
-                  {#if data.tickets.length > 8}
+                  {#if Object.keys($tickets).length > 8}
                     <div class="mt-2">
                       <a href="/anfragen" class="underline"
-                        >... und {data.tickets.length - 8} weitere Tickets<i
+                        >... und {Object.keys($tickets).length - 8} weitere Tickets<i
                           class="fa-solid fa-arrow-up-right-from-square ml-2"
                         ></i
                         ></a>
                     </div>
+                  {:else if Object.keys($tickets).length == 0}
+                    <p class="mt-2">Du hast keine Tickets.</p>
                   {/if}
                 </ul>
               {:else}
-                <p class="mt-2">Du hast keine Tickets.</p>
-              {/if}
+                <div class="flex justify-center">
+                  <div class="ml-2 flex-row">
+                    <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
+                      <circle
+                        class="opacity-0"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                        data-darkreader-inline-stroke=""
+                        style="--darkreader-inline-stroke:currentColor;"
+                      ></circle>
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        data-darkreader-inline-fill=""
+                        style="--darkreader-inline-fill:currentColor;"></path>
+                    </svg>
+                    <p class="ml-5 mt-10 place-self-start text-left">
+                      Lade Tickets ...
+                    </p>
+                  </div>
+                </div>{/if}
             </Box>
           {/if}
         </div>
@@ -358,7 +360,7 @@ console.log("store " + JSON.stringify($storeUser));
       <a href="/"
         ><label
           for="my-modal-3"
-          class="btn btn-circle btn-sm absolute right-2 top-2"
+          class="btn-sm btn-circle btn absolute right-2 top-2"
           on:click="{() => {
             modal = false;
           }}">✕</label

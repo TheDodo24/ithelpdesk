@@ -1,7 +1,6 @@
 <script>
 // @ts-nocheck
 import logo from "$lib/logo.png";
-
 export var user;
 </script>
 

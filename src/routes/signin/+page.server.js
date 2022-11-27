@@ -55,15 +55,11 @@ export const actions = {
           var result;
           try {
             result = await locals.pb.collection("users").create(data);
-            console.log(result);
 
             const authData = await locals.pb
               .collection("users")
               .authWithPassword(body.email, body.password);
-
-            console.log(authData);
           } catch (err) {
-            console.log(err);
             return invalid(400, {
               errorMessage: "Konnte nicht registriert werden:\n",
             });

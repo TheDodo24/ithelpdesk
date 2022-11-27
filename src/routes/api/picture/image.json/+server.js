@@ -10,7 +10,6 @@ export async function GET() {
     "https://api.nasa.gov/planetary/apod?api_key=IBYdDgndqUZTPkSr9FSz7JrybW6UAlYEyapD6uVc",
     {
       method: "GET",
-      agent: agent,
     }
   );
 
