@@ -1,3 +1,4 @@
+import { PUBLIC } from "$env/static/private";
 import { error, redirect } from "@sveltejs/kit";
 
 // @ts-ignore
@@ -10,6 +11,12 @@ export async function load({ locals, params, url }) {
 
     if (url.searchParams.has("modal")) {
       modal = url.searchParams.get("modal");
+    }
+
+    try {
+      await locals.pb.collection("requests").getOne(params.id);
+    } catch (err) {
+      throw error(500, "No ticket with id " + params.id + " found.");
     }
 
     return {
@@ -29,6 +36,6 @@ export const actions = {
       finished: true,
     };
     await locals.pb.collection("requests").update(id, data);
-    throw redirect(303, "?modal=closed");
+    throw redirect(303, "?modal=close");
   },
 };

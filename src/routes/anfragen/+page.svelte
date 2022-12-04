@@ -1,9 +1,6 @@
-
-
 <script>
 import { storeUser } from "$lib/stores/user.js";
 import Header from "$lib/Header_test.svelte";
-import Box from "$lib/Box.svelte";
 import RequestList from "./RequestList.svelte";
 import { onMount } from "svelte";
 
@@ -35,7 +32,7 @@ onMount(() => {
       <a href="/anfragen"
         ><label
           for="my-modal-3"
-          class="btn btn-circle btn-sm absolute right-2 top-2"
+          class="btn-sm btn-circle btn absolute right-2 top-2"
           on:click="{() => {
             modal = false;
           }}">✕</label
@@ -62,10 +59,15 @@ onMount(() => {
           stroke-miterlimit="10"
           points="100.2,40.2 51.5,88.8 29.8,67.5 "></polyline>
       </svg>
-      <h3 class="py-4 text-lg font-bold">Ticket erfolgreich erstellt</h3>
+      <h3 class="py-4 text-lg font-bold">
+        {modal == "post"
+          ? "Antwort wurde erfolgreich gepostet"
+          : "Dein Ticket wurde erfolgreich erstellt"}
+      </h3>
       <p class="">
-        Dein Ticket wurde erfolgreich erstellt und wird sobald wie möglich
-        bearbeitet.
+        {modal == "post"
+          ? "Deine Antwort wurde gepostet."
+          : "Dein Ticket wurde erfolgreich erstellt und wird sobald wie möglich bearbeitet."}
       </p>
     </div>
   </div>

@@ -1,7 +1,7 @@
 import PocketBase from "pocketbase";
 // @ts-ignore
 export const handle = async ({ event, resolve }) => {
-  event.locals.pb = new PocketBase("https://it.xenrod.de/");
+  event.locals.pb = new PocketBase("https://it.envys.de/");
   event.locals.pb.authStore.loadFromCookie(
     event.request.headers.get("cookie") || ""
   );

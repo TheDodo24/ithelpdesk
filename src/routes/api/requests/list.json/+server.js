@@ -1,7 +1,7 @@
 export async function GET({ locals }) {
   const records = await locals.pb.collection("requests").getFullList(200, {
     sort: "finished,created",
-    expand: "author"
+    expand: "author",
   });
 
   const recordsJson = {};
@@ -33,6 +33,12 @@ export async function GET({ locals }) {
     var answerJson = JSON.parse(JSON.stringify(answers));
 
     for (let answer of answerJson) {
+      const files = answer["files"];
+      for (let file of files) {
+        const url = locals.pb.getFileUrl(answer, file);
+        files[files.indexOf(file)] = url;
+      }
+      answer["files"] = files;
       const createdDate = new Date(answer.created);
       answer["created"] = createdDate.toLocaleDateString("de-de", dateOptions);
     }

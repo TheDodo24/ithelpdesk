@@ -41,6 +41,7 @@ var modal = false;
             type="text"
             placeholder="Titel"
             name="title"
+            value="{form ? form.body.title : ''}"
             class="input-bordered input {errorTitle
               ? 'input-error'
               : 'input-primary'} "
@@ -51,6 +52,7 @@ var modal = false;
               : 'textarea-primary'} "
             on:click="{() => (errorText = false)}"
             name="text"
+            value="{form ? form.body.text : ''}"
             placeholder="Beschreibe dein Problem"></textarea>
           <label for="file">Zusätzliche Dateien (max. 10)</label>
           <input

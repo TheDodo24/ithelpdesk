@@ -11,15 +11,7 @@ export let modal;
 console.log($tickets);
 let promise;
 if (!$tickets || Object.keys($tickets).length == 0) {
-  try {
-    promise = requestJson(id);
-  } catch (err) {
-    throw error(400, "No ticket found.");
-  }
-} else {
-  if (!$tickets[id]) {
-    throw error(400, "No ticket with id " + id + " found");
-  }
+  promise = requestJson(id);
 }
 
 async function requestJson(id) {
@@ -28,7 +20,7 @@ async function requestJson(id) {
   let json = JSON.parse(response);
   $tickets = json;
   if (req.ok && json[id]) return json;
-  else return new Error("Not found");
+  else throw error(500, "No ticket " + id + " found.");
 }
 
 var closeModal = false;
@@ -113,6 +105,19 @@ var closeModal = false;
                 {answer.expand.author.username} - {answer.created}
               </h2>
               <p class="mt-2">{@html answer.text}</p>
+
+              {#if answer.files.length > 0}
+                <div class="divider"></div>
+                <div class="text-2xl font-bold">Dateien:</div>
+                <div class="mt-2 grid gap-5 md:grid-cols-3 lg:grid-cols-4">
+                  {#each answer.files as file}
+                    <a class="inline-block" href="{file}"
+                      ><i class="fa-solid fa-file mr-2"></i>{file.split("/")[
+                        file.split("/").length - 1
+                      ]}</a>
+                  {/each}
+                </div>
+              {/if}
             </div>
           </Box>
         {/each}
@@ -231,13 +236,64 @@ var closeModal = false;
               {answer.expand.author.username} - {answer.created}
             </h2>
             <p class="mt-2">{@html answer.text}</p>
+            {#if answer.files.length > 0}
+              <div class="divider"></div>
+              <div class="text-2xl font-bold">Dateien:</div>
+              <div class="mt-2 grid gap-5 md:grid-cols-3 lg:grid-cols-4">
+                {#each answer.files as file}
+                  <a class="inline-block" href="{file}"
+                    ><i class="fa-solid fa-file mr-2"></i>{file.split("/")[
+                      file.split("/").length - 1
+                    ]}</a>
+                {/each}
+              </div>
+            {/if}
           </div>
         </Box>
       {/each}
     </div>
   </div>
   {#if modal}
-    <div class="modal modal-open">
+    <div class="modal {modal == 'reply' ? 'modal-open' : ''}">
+      <div class="modal-box relative items-center text-center">
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <a href="?"
+          ><label
+            for="my-modal-3"
+            class="btn-sm btn-circle btn absolute right-2 top-2"
+            on:click="{() => {
+              modal = false;
+            }}">✕</label
+          ></a>
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 130.2 130.2">
+          <circle
+            class="path circle"
+            fill="none"
+            stroke="#73AF55"
+            stroke-width="6"
+            stroke-miterlimit="10"
+            cx="65.1"
+            cy="65.1"
+            r="62.1"></circle>
+          <polyline
+            class="path check"
+            fill="none"
+            stroke="#73AF55"
+            stroke-width="6"
+            stroke-linecap="round"
+            stroke-miterlimit="10"
+            points="100.2,40.2 51.5,88.8 29.8,67.5 "></polyline>
+        </svg>
+        <h3 class="py-4 text-lg font-bold">
+          Antwort wurde erfolgreich gepostet
+        </h3>
+        <p class="">Deine Antwort wurde gepostet.</p>
+      </div>
+    </div>
+    <div class="modal {modal == 'close' ? 'modal-open' : ''}">
       <div class="modal-box relative items-center text-center">
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <a href="?"

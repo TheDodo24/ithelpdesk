@@ -6,7 +6,7 @@ export async function GET() {
     rejectUnauthorized: false,
     proxy: "http://10.49.26.65:8080",
   });
-  const res = await fetch("https://aramarkio.xenrod.de/api/menu/menu.json");
+  const res = await fetch("https://aramarkio.envys.de/api/menu/menu.json");
   let text = await res.text();
 
   let json = JSON.parse(text);

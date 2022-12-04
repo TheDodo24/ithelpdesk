@@ -75,7 +75,7 @@ async function getMenu(window) {
 async function getPOTD(window) {
   const imgres = await fetch("/api/picture/image.json");
 
-  $potd = JSON.parse(await imgres.text())["src"];
+  $potd = JSON.parse(await imgres.text());
 }
 
 async function getWeather(window) {
@@ -196,7 +196,17 @@ if (data.user) {
             <div class="mt-5 flex flex-row justify-center">
               {#if $potd != ""}
                 <!-- svelte-ignore a11y-img-redundant-alt -->
-                <img src="{$potd}" alt="Picture of the day" />
+                {#if $potd["media"] === "video"}
+                  <a
+                    href="{$potd['src']}"
+                    class="underline"
+                    target="_blank"
+                    rel="noreferrer"
+                    ><i class="fa-solid fa-arrow-up-right-from-square mr-3"></i
+                    >YouTube-Link</a>
+                {:else}
+                  <img src="{$potd['src']}" alt="Picture of the day" />
+                {/if}
               {:else}
                 <div class="flex justify-center">
                   <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">

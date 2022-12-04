@@ -1,7 +1,7 @@
 <script>
 import Header from "$lib/Header_test.svelte";
 import { storeUser } from "$lib/stores/user.js";
-import Ticket from "./Ticket.svelte";
+import Ticket from "$lib/Ticket.svelte";
 import { onMount } from "svelte";
 /** @type {import('./$types').PageData} */ export let data;
 if (data.user) {

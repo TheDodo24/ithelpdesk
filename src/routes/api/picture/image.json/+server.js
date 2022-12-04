@@ -14,9 +14,13 @@ export async function GET() {
   );
 
   let json = JSON.parse(await res.text());
+  var img;
 
-  let img = { src: json["hdurl"] };
-
+  if (json["hdurl"]) {
+    img = { src: json["hdurl"], media: json["media_type"] };
+  } else if (json["url"]) {
+    img = { src: json["url"], media: json["media_type"] };
+  }
   return new Response(JSON.stringify(img), {
     status: 200,
     statusText: "Returned NASA picture of the day",

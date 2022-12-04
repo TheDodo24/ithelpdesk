@@ -6,59 +6,59 @@ export async function load({ locals, params }) {
     throw redirect(303, "/");
   } else {
     var authStoreModel = JSON.parse(JSON.stringify(locals.pb.authStore.model));
+    const record = await locals.pb.collection("requests").getOne(params.id);
+    if (record.finished) {
+      throw redirect(303, "/");
+    }
     return { user: authStoreModel };
   }
 }
-
-/** @type {import('./$types').Actions} */
 export const actions = {
-  "post-ticket": async ({ request, locals, url }) => {
+  "post-reply": async ({ request, locals, url, params }) => {
     const formData = await request.formData();
     let body = Object.fromEntries(formData.entries());
     if (url.searchParams.has("user")) {
-      if (body.title && body.text && body.check) {
+      if (body.text && body.check) {
         var user = url.searchParams.get("user");
         var inputFiles = formData.getAll("file");
+        console.log(inputFiles);
         try {
           const requestFormData = new FormData();
           requestFormData.append("author", user || "");
+          requestFormData.append("request", params.id);
           requestFormData.append(
-            "content",
+            "text",
             // @ts-ignore
             body.text.replaceAll("\n", "<br />")
           );
-          requestFormData.append("title", body.title);
-          requestFormData.append("finished", "false");
-          for (let inputFile of inputFiles) {
+          for (let inputFile of inputFiles.filter(function (e) {
+            return e.size > 0;
+          })) {
             requestFormData.append("files", inputFile);
           }
+
           // @ts-ignore
-          await locals.pb.collection("requests").create(requestFormData);
+          await locals.pb.collection("answers").create(requestFormData);
         } catch (err) {
+          console.log(err);
           return invalid(400, {
             errorMessage: "Eintrag konnte nicht erstellt werden.",
             body: JSON.parse(JSON.stringify(body)),
           });
         }
-        throw redirect(303, "/anfragen?modal=created");
+        throw redirect(303, "/ticket/" + params.id + "?modal=reply");
       } else {
-        if (body.title == "") {
-          return invalid(400, {
-            missingTitle: true,
-            errorMessage: "Bitte gebe einen Titel an",
-            body: JSON.parse(JSON.stringify(body)),
-          });
-        } else if (body.text == "") {
+        if (body.text == "") {
           return invalid(400, {
             missingText: true,
-            errorMessage: "Bitte gebe dein Problem an",
+            errorMessage: "Bitte gebe dein Antworttext an",
             body: JSON.parse(JSON.stringify(body)),
           });
         } else {
           return invalid(400, {
             missingCheck: true,
             errorMessage:
-              "Leider kannst du kein Ticket erstellen, wenn du nicht verspottet werden möchtest.",
+              "Leider kannst du keine Antwort schreiben, wenn du nicht damit einverstanden bist haftbar gemacht zu werden.",
             body: JSON.parse(JSON.stringify(body)),
           });
         }

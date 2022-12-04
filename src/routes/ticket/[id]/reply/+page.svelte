@@ -1,11 +1,16 @@
 <script>
 import { storeUser } from "$lib/stores/user.js";
-import { tickets } from "$lib/stores/tickets.js";
+/** @type {import('./$types').PageData} */ export let data;
+if (data.user) {
+  if (!$storeUser) storeUser.set(data.user);
+}
+
+/** @type {import('./$types').ActionData} */ export let form;
 
 var modal = false;
-var errorText = false;
-var errorCheck = false;
-var errorMessage = "";
+var errorText = form?.missingText;
+var errorCheck = form?.missingCheck;
+var errorMessage = form?.errorMessage;
 </script>
 
 <div
@@ -27,7 +32,7 @@ var errorMessage = "";
         method="post"
         on:submit="{() => (modal = true)}"
         enctype="multipart/form-data"
-        action="?/post-ticket&user={$storeUser.id}">
+        action="?/post-reply&user={$storeUser.id}">
         <div class="form-control mt-5 grid gap-y-5">
           <textarea
             class="textarea-bordered textarea {errorText
@@ -35,6 +40,7 @@ var errorMessage = "";
               : 'textarea-primary'} "
             on:click="{() => (errorText = false)}"
             name="text"
+            value="{form?.body ? form.body.text : ''}"
             placeholder="Antwort"></textarea>
           <label for="file">Zusätzliche Dateien (max. 10)</label>
           <input
@@ -51,13 +57,21 @@ var errorMessage = "";
               <p class="label inline-block text-sm">
                 (nach <a
                   href="https://rebrand.ly/-00A7_241_Abs_1_BGB"
-                  class=" underline">§241 Abs. 1 BGB</a
+                  class=" underline"
+                  target="_blank"
+                  rel="noreferrer">§241 Abs. 1 BGB</a
                 >,
-                <a href="https://rebrand.ly/-00A7_276_BGB" class="underline"
-                  >§276</a
+                <a
+                  href="https://rebrand.ly/-00A7_276_BGB"
+                  class="underline"
+                  target="_blank"
+                  rel="noreferrer">§276</a
                 >,
-                <a href="https://rebrand.ly/-00A7_459_BGB" class="underline"
-                  >§459 BGB</a
+                <a
+                  href="https://rebrand.ly/-00A7_459_BGB"
+                  class="underline"
+                  target="_blank"
+                  rel="noreferrer">§459 BGB</a
                 >)
                 <!-- rick roll, amazon bgb, lmgtfy -->
               </p>
@@ -88,5 +102,29 @@ var errorMessage = "";
         </div>
       </form>
     </div>
+  </div>
+</div>
+
+<div class="modal {modal ? 'modal-open' : ''}">
+  <div class="modal-box relative items-center text-center">
+    <svg class="h-25 w-25 animate-spin" viewBox="0 0 24 24">
+      <circle
+        class="opacity-0"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="4"
+        data-darkreader-inline-stroke=""
+        style="--darkreader-inline-stroke:white;"></circle>
+      <path
+        class="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        data-darkreader-inline-fill=""
+        style="--darkreader-inline-fill:currentColor;"></path
+      ></svg>
+    <h3 class="py-4 text-lg font-bold">Deine Antwort wird gepostet...</h3>
+    <p class="">Bitte warte einen Augenblick.</p>
   </div>
 </div>
