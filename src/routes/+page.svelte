@@ -11,6 +11,7 @@ import { tickets } from "$lib/stores/tickets.js";
 import Header from "$lib/Header_test.svelte";
 import Box from "$lib/Box.svelte";
 import { onMount } from "svelte";
+import ranks from "$lib/ranks.json";
 //import style from "./startpage.css";
 
 /** @type {import('./$types').PageData} */ export let data;
@@ -88,9 +89,9 @@ async function getTickets(window) {
   $tickets = JSON.parse(await ticketRes.text());
 }
 if (data.user) {
-  storeUser.set(data.user);
+  $storeUser = data.user;
 } else {
-  storeUser.set(undefined);
+  $storeUser = undefined;
 }
 </script>
 
@@ -128,8 +129,21 @@ if (data.user) {
               <div class="content-around">
                 <p class="text-xl">Angemeldet als</p>
                 <p class="text-5xl font-bold">{$storeUser["username"]}</p>
-                <p><i class="fa-solid fa-ranking-star mr-2"></i>Ober Noob</p>
-                <p><i class="fa-solid fa-medal mr-2"></i> -10000</p>
+                <p>
+                  <i class="fa-solid fa-ranking-star mr-2"></i>{ranks[
+                    Object.keys(ranks).find(
+                      (key) =>
+                        Object.keys(ranks)
+                          .map((key) => parseInt(key))
+                          .filter((key) => $storeUser["points"] >= key)
+                          .pop() == key
+                    )
+                  ]}
+                </p>
+                <p>
+                  <i class="fa-solid fa-medal mr-2"></i>
+                  {$storeUser["points"]}
+                </p>
               </div>
             {:else}
               <p class="text-3xl">Du bist nicht angemeldet</p>

@@ -51,6 +51,7 @@ export const actions = {
             emailVisibility: true,
             password: body.password,
             passwordConfirm: body.password,
+            points: 0
           };
           var result;
           try {

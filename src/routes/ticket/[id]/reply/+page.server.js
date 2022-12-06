@@ -1,4 +1,5 @@
 import { invalid, redirect } from "@sveltejs/kit";
+import { storeUser } from "$lib/stores/user";
 
 // @ts-ignore
 export async function load({ locals, params }) {
@@ -21,7 +22,8 @@ export const actions = {
       if (body.text && body.check) {
         var user = url.searchParams.get("user");
         var inputFiles = formData.getAll("file");
-        console.log(inputFiles);
+        let userdata;
+        let unsubscribe = storeUser.subscribe((val) => (userdata = val));
         try {
           const requestFormData = new FormData();
           requestFormData.append("author", user || "");
@@ -39,12 +41,22 @@ export const actions = {
 
           // @ts-ignore
           await locals.pb.collection("answers").create(requestFormData);
+          let points = userdata.points + 50;
+          storeUser.set(points);
+          var updateUser = {
+            points: points,
+          };
+          await locals.pb
+            .collection("users")
+            .update(locals.pb.authStore.model.id, updateUser);
         } catch (err) {
           console.log(err);
           return invalid(400, {
             errorMessage: "Eintrag konnte nicht erstellt werden.",
             body: JSON.parse(JSON.stringify(body)),
           });
+        } finally {
+          unsubscribe();
         }
         throw redirect(303, "/ticket/" + params.id + "?modal=reply");
       } else {
