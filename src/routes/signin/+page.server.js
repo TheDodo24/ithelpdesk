@@ -1,13 +1,28 @@
 import { invalid, redirect } from "@sveltejs/kit";
+
+export async function load({ locals }) {
+  if (locals.pb.authStore.isValid) {
+    throw redirect(303, "/");
+  }
+}
+
 /** @type {import('./$types').Actions} */
 export const actions = {
   login: async ({ request, locals }) => {
     const body = Object.fromEntries(await request.formData());
     if (body.email && body.password) {
       try {
-        await locals.pb
+        const authData = await locals.pb
           .collection("users")
           .authWithPassword(body.email, body.password);
+        if (!authData.record.verified) {
+          locals.pb.authStore.clear();
+          return invalid(400, {
+            incorrectLogin: true,
+            errorMessage:
+              "Du musst zuerst deine E-Mail verifizieren, bevor du dich anmelden kannst.",
+          });
+        }
       } catch (err) {
         return invalid(400, {
           incorrectLogin: true,
@@ -51,18 +66,17 @@ export const actions = {
             emailVisibility: true,
             password: body.password,
             passwordConfirm: body.password,
-            points: 0
+            points: 100,
           };
           var result;
           try {
             result = await locals.pb.collection("users").create(data);
-
-            const authData = await locals.pb
-              .collection("users")
-              .authWithPassword(body.email, body.password);
+            await locals.pb.collection("users").requestVerification(body.email);
           } catch (err) {
             return invalid(400, {
-              errorMessage: "Konnte nicht registriert werden:\n",
+              errorMessage:
+                "Konnte nicht registriert werden:<br />" +
+                err.data.data[Object.keys(err.data.data)[0]].message,
             });
           }
 

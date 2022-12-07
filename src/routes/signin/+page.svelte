@@ -18,7 +18,7 @@ var modal = false;
 </script>
 
 <div class="flex h-screen w-screen content-center items-center justify-center">
-  <div class="card w-96 bg-base-300 shadow-xl">
+  <div class="card w-fit bg-base-300 shadow-xl">
     <div class="card-body items-center">
       <div class="btn-group">
         <button
@@ -32,6 +32,7 @@ var modal = false;
       </div>
       <form
         method="post"
+        class="w-full px-5"
         action="{!op ? '?/login' : '?/register'}"
         on:submit="{() => (modal = true)}">
         <div class="form-control mt-5 grid w-full gap-y-5">
@@ -40,7 +41,7 @@ var modal = false;
             name="email"
             placeholder="{!op ? 'E-Mail/Benutzername' : 'E-Mail'}"
             on:click="{() => (errorMail = false)}"
-            class="input input-bordered {errorMail
+            class="input-bordered input {errorMail
               ? 'input-error'
               : 'input-primary'} w-full" />
           <input
@@ -48,7 +49,7 @@ var modal = false;
             name="password"
             placeholder="Passwort"
             on:click="{() => (errorPassword = false)}"
-            class="input input-bordered {errorPassword
+            class="input-bordered input {errorPassword
               ? 'input-error'
               : 'input-primary'} w-full" />
           {#if op}
@@ -64,7 +65,7 @@ var modal = false;
               }}"
               placeholder="Passwort wiederholen"
               on:click="{() => (errorCheckPassword = false)}"
-              class="input input-bordered {errorCheckPassword
+              class="input-bordered input {errorCheckPassword
                 ? 'input-error'
                 : 'input-primary'} w-full" />
             <input
@@ -79,7 +80,7 @@ var modal = false;
               }}"
               on:click="{() => (errorName = false)}"
               placeholder="Benutzername"
-              class="input input-bordered {errorName
+              class="input-bordered input {errorName
                 ? 'input-error'
                 : 'input-primary'} w-full" />
             <label
@@ -103,7 +104,7 @@ var modal = false;
           {/if}
           <div class="divider"></div>
           {#if errorMessage != ""}
-            <p>{errorMessage}</p>
+            <p class="text-center">{@html errorMessage}</p>
           {/if}
           <button
             class="btn items-center bg-purple-800 text-white hover:bg-purple-900"
@@ -111,9 +112,11 @@ var modal = false;
         </div>
       </form>
 
-      <div class="mt-5 w-full">
-        <a class="underline" href="/"
+      <div class="mt-5 inline-flex w-full">
+        <a class="whitespace-pre underline" href="/"
           ><i class="fa-solid fa-arrow-left mr-3"></i>Zurück zur Startseite</a>
+        <a class="ml-10 whitespace-pre underline" href="/forgot-password"
+          >Passwort vergessen?<i class="fa-solid fa-arrow-right ml-3"></i></a>
       </div>
     </div>
   </div>

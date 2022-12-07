@@ -377,7 +377,7 @@ if (data.user) {
     </div>
   </div>
 </div>
-{#if data.op == "login" || data.op == "register" || data.op == "logout"}
+{#if data.op == "login" || data.op == "register" || data.op == "logout" || data.op == "reset"}
   <div class="modal {modal ? 'modal-open' : ''}">
     <div class="modal-box relative items-center text-center">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -413,20 +413,33 @@ if (data.user) {
       </svg>
       <h3 class="py-4 text-lg font-bold">
         {#if data.op == "login" || data.op == "register"}
-          Herzlich Willkommen{data.op == "login" ? " zurück" : ""}, {$storeUser[
-            "username"
-          ]}
+          Herzlich Willkommen{data.op == "login"
+            ? " zurück " + $storeUser["username"]
+            : ""}
+        {:else if data.op == "reset"}
+          Zurücksetzen erfolgreich.
         {:else}
           Bis Bald, {data.name}
         {/if}
       </h3>
       <p class="">
-        Du hast dich erfolgreich {data.op == "login"
-          ? "eingeloggt"
-          : data.op == "logout"
-          ? "ausgeloggt"
-          : "registriert"}!
+        {#if data.op == "reset"}
+          Es wurde ein Link an deine E-Mail versendet, falls diese in unserer
+          Datenbank existiert.
+        {:else}
+          Du hast dich erfolgreich {data.op == "login"
+            ? "eingeloggt"
+            : data.op == "logout"
+            ? "ausgeloggt"
+            : "registriert"}!
+        {/if}
       </p>
+      {#if data.op == "register"}
+        <p>
+          Verifiziere deine E-Mail Adresse, mit der E-Mail die du gerade von uns
+          bekommen hast.
+        </p>
+      {/if}
     </div>
   </div>
 {/if}
