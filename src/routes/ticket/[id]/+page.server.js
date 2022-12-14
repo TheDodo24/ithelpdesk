@@ -1,4 +1,3 @@
-import { PUBLIC } from "$env/static/private";
 import { error, redirect } from "@sveltejs/kit";
 
 // @ts-ignore

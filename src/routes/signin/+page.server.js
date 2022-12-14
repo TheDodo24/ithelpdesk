@@ -1,4 +1,4 @@
-import { invalid, redirect } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 
 export async function load({ locals }) {
   if (locals.pb.authStore.isValid) {
@@ -17,14 +17,14 @@ export const actions = {
           .authWithPassword(body.email, body.password);
         if (!authData.record.verified) {
           locals.pb.authStore.clear();
-          return invalid(400, {
+          return fail(400, {
             incorrectLogin: true,
             errorMessage:
               "Du musst zuerst deine E-Mail verifizieren, bevor du dich anmelden kannst.",
           });
         }
       } catch (err) {
-        return invalid(400, {
+        return fail(400, {
           incorrectLogin: true,
           errorMessage:
             "Die Kombination aus Passwort und E-Mail existiert nicht.",
@@ -34,13 +34,13 @@ export const actions = {
       throw redirect(303, "/?modal=login");
     } else {
       if (body.email == "") {
-        return invalid(400, {
+        return fail(400, {
           missingMail: true,
           errorMessage: "Bitte gib eine E-Mail an.",
           register: false,
         });
       } else {
-        return invalid(400, {
+        return fail(400, {
           missingPassword: true,
           errorMessage: "Bitte gib ein Passwort an.",
           register: false,
@@ -73,7 +73,7 @@ export const actions = {
             result = await locals.pb.collection("users").create(data);
             await locals.pb.collection("users").requestVerification(body.email);
           } catch (err) {
-            return invalid(400, {
+            return fail(400, {
               errorMessage:
                 "Konnte nicht registriert werden:<br />" +
                 err.data.data[Object.keys(err.data.data)[0]].message,
@@ -82,14 +82,14 @@ export const actions = {
 
           throw redirect(303, "/?modal=register");
         } else {
-          return invalid(400, {
+          return fail(400, {
             notTheSamePassword: true,
             errorMessage: "Das Passwort muss mindestens 8 Zeichen lang sein.",
             register: true,
           });
         }
       } else {
-        return invalid(400, {
+        return fail(400, {
           notTheSamePassword: true,
           errorMessage: "Die Passwörter stimmen nicht überein.",
           register: true,
@@ -97,31 +97,31 @@ export const actions = {
       }
     } else {
       if (body.email == "") {
-        return invalid(400, {
+        return fail(400, {
           missingMail: true,
           errorMessage: "Bitte gib eine E-Mail an.",
           register: true,
         });
       } else if (body.password == "") {
-        return invalid(400, {
+        return fail(400, {
           missingPassword: true,
           errorMessage: "Bitte gib ein Passwort an.",
           register: true,
         });
       } else if (body.checkPassword == "") {
-        return invalid(400, {
+        return fail(400, {
           missingPasswordCheck: true,
           errorMessage: "Bitte gib das Passwort zwei mal an.",
           register: true,
         });
       } else if (!body.check) {
-        return invalid(400, {
+        return fail(400, {
           missingCheck: true,
           errorMessage: "Du musst diene Seele verkaufen.",
           register: true,
         });
       } else {
-        return invalid(400, {
+        return fail(400, {
           missingName: true,
           errorMessage: "Bitte gib einen Namen an.",
           register: true,

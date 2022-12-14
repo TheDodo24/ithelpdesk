@@ -1,4 +1,4 @@
-import { invalid, redirect } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 import { storeUser } from "$lib/stores/user";
 
 // @ts-ignore
@@ -51,7 +51,7 @@ export const actions = {
             .update(locals.pb.authStore.model.id, updateUser);
         } catch (err) {
           console.log(err);
-          return invalid(400, {
+          return fail(400, {
             errorMessage: "Eintrag konnte nicht erstellt werden.",
             body: JSON.parse(JSON.stringify(body)),
           });
@@ -61,13 +61,13 @@ export const actions = {
         throw redirect(303, "/ticket/" + params.id + "?modal=reply");
       } else {
         if (body.text == "") {
-          return invalid(400, {
+          return fail(400, {
             missingText: true,
             errorMessage: "Bitte gebe dein Antworttext an",
             body: JSON.parse(JSON.stringify(body)),
           });
         } else {
-          return invalid(400, {
+          return fail(400, {
             missingCheck: true,
             errorMessage:
               "Leider kannst du keine Antwort schreiben, wenn du nicht damit einverstanden bist haftbar gemacht zu werden.",

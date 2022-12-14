@@ -1,4 +1,6 @@
 <script>
+// @ts-nocheck
+
 import { storeUser } from "$lib/stores/user.js";
 /** @type {import('./$types').PageData} */ export let data;
 if (data.user) {
@@ -8,7 +10,9 @@ if (data.user) {
 /** @type {import('./$types').ActionData} */ export let form;
 
 var modal = false;
+// @ts-ignore
 var errorText = form?.missingText;
+// @ts-ignore
 var errorCheck = form?.missingCheck;
 var errorMessage = form?.errorMessage;
 </script>

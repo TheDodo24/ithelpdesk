@@ -15,15 +15,15 @@
     "@types/node-fetch": "^2.6.2",
     "autoprefixer": "^10.4.12",
     "postcss": "^8.4.18",
-    "prettier": "^2.7.1",
-    "prettier-plugin-tailwindcss": "^0.1.13",
-    "svelte": "^3.44.0",
-    "svelte-check": "^2.7.1",
-    "svelte-loading-spinners": "^0.3.4",
-    "svelte-preprocess": "^4.10.7",
+    "prettier": "latest",
+    "prettier-plugin-tailwindcss": "latest",
+    "svelte": "latest",
+    "svelte-check": "latest",
+    "svelte-loading-spinners": "latest",
+    "svelte-preprocess": "latest",
     "tailwindcss": "latest",
-    "typescript": "^4.7.4",
-    "vite": "^3.1.0"
+    "typescript": "latest",
+    "vite": "latest"
   },
   "type": "module",
   "dependencies": {

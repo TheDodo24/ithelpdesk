@@ -1,4 +1,4 @@
-import { redirect, invalid } from "@sveltejs/kit";
+import { redirect, fail } from "@sveltejs/kit";
 
 export async function load({ locals }) {
   if (locals.pb.authStore.isValid) {
@@ -13,7 +13,7 @@ export const actions = {
       await locals.pb.collection("users").requestPasswordReset(body.email);
       throw redirect(303, "/?modal=reset");
     } else {
-      return invalid(400, {
+      return fail(400, {
         errorMessage: "Bitte gebe eine E-Mail an",
         missingMail: true,
       });
