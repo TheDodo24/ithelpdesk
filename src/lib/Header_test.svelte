@@ -15,10 +15,9 @@ export var user;
       {#if user}
         <a class="btn btn-ghost text-2xl normal-case" href="/anfragen"
           >Anfragen</a>
+        <a class="btn btn-ghost text-2xl normal-case" href="/scoreboard"
+          >Scoreboard</a>
       {/if}
-
-      <a class="btn btn-ghost text-2xl normal-case" href="/scoreboard"
-        >Scoreboard</a>
     </div>
     <div class="dropdown-end dropdown text-white">
       {#if user}

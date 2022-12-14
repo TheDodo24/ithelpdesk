@@ -34,7 +34,12 @@ export const actions = {
     const data = {
       finished: true,
     };
-    await locals.pb.collection("requests").update(id, data);
+    const record = await locals.pb.collection("requests").update(id, data);
+    const user = await locals.pb.collection("users").getOne(record.author);
+    const userData = {
+      points: user.points + 75,
+    };
+    await locals.pb.collection("users").update(user.id, userData);
     throw redirect(303, "?modal=close");
   },
 };

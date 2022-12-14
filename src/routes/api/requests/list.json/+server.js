@@ -1,3 +1,5 @@
+import ranks from "$lib/ranks.json";
+
 export async function GET({ locals }) {
   const records = await locals.pb.collection("requests").getFullList(200, {
     sort: "finished,created",
@@ -6,8 +8,16 @@ export async function GET({ locals }) {
 
   const recordsJson = {};
   for (const record of JSON.parse(JSON.stringify(records))) {
-    const user = await locals.pb.collection("users").getOne(record["author"]);
-    record["author"] = user["username"];
+    record["icon"] =
+      ranks[
+        Object.keys(ranks).find(
+          (key) =>
+            Object.keys(ranks)
+              .map((key) => parseInt(key))
+              .filter((key) => record.expand.author.points >= key)
+              .pop() == key
+        )
+      ].picture;
     const files = record["files"];
     for (let file of files) {
       const url = locals.pb.getFileUrl(record, file);
@@ -33,6 +43,16 @@ export async function GET({ locals }) {
     var answerJson = JSON.parse(JSON.stringify(answers));
 
     for (let answer of answerJson) {
+      answer["icon"] =
+        ranks[
+          Object.keys(ranks).find(
+            (key) =>
+              Object.keys(ranks)
+                .map((key) => parseInt(key))
+                .filter((key) => answer.expand.author.points >= key)
+                .pop() == key
+          )
+        ].picture;
       const files = answer["files"];
       for (let file of files) {
         const url = locals.pb.getFileUrl(answer, file);

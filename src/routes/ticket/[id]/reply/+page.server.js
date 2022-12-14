@@ -41,7 +41,7 @@ export const actions = {
 
           // @ts-ignore
           await locals.pb.collection("answers").create(requestFormData);
-          let points = userdata.points + 50;
+          let points = userdata.points + 25;
           storeUser.set(points);
           var updateUser = {
             points: points,

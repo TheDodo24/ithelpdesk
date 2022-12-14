@@ -1,6 +1,70 @@
 {
-  "0": "xyz",
-  "100": "abc",
-  "700": "555",
-  "_comment": "tiere + links zu tieren?"
+  "100": {
+    "name": "Wanze",
+    "picture": "bugs"
+  },
+  "500": {
+    "name": "Wurm",
+    "picture": "worm"
+  },
+  "900": {
+    "name": "Moskito",
+    "picture": "mosquito"
+  },
+  "1500": {
+    "name": "Heuschrecke",
+    "picture": "locust"
+  },
+  "2100": {
+    "name": "Shrimp",
+    "picture": "shrimp"
+  },
+  "2800": {
+    "name": "Fisch",
+    "picture": "fish"
+  },
+  "3500": {
+    "name": "Krähe",
+    "picture": "crow"
+  },
+  "4400": {
+    "name": "Taube",
+    "picture": "dove"
+  },
+  "5300": {
+    "name": "Frosch",
+    "picture": "frog"
+  },
+  "6300": {
+    "name": "Kiwi",
+    "picture": "kiwi-bird"
+  },
+  "7300": {
+    "name": "Katze",
+    "picture": "cat"
+  },
+  "8500": {
+    "name": "Hund",
+    "picture": "dog"
+  },
+  "9700": {
+    "name": "Otter",
+    "picture": "otter"
+  },
+  "11000": {
+    "name": "Kuh",
+    "picture": "cow"
+  },
+  "12300": {
+    "name": "Pferd",
+    "picture": "horse"
+  },
+  "13700": {
+    "name": "Hippo",
+    "picture": "hippo"
+  },
+  "15100": {
+    "name": "Drache",
+    "picture": "dragon"
+  }
 }

@@ -14,8 +14,6 @@ if (!$tickets) {
   promise = requestJson();
 }
 
-console.log($tickets);
-
 async function requestJson() {
   const req = await fetch("/api/requests/list.json");
   let response = await req.text();
@@ -230,7 +228,10 @@ async function requestJson() {
                 <p>
                   {$tickets[key].created}
                 </p>
-                <p>{$tickets[key].author}</p>
+                <p>
+                  {$tickets[key].expand.author.username}
+                  <i class="ml-1 fa-solid fa-{$tickets[key].icon}"></i>
+                </p>
                 <p>
                   <i
                     class="fa-solid fa-{$tickets[key].finished ? 'check' : 'x'}"

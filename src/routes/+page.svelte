@@ -88,8 +88,19 @@ async function getTickets(window) {
   const ticketRes = await fetch("api/requests/list.json");
   $tickets = JSON.parse(await ticketRes.text());
 }
+var rank = undefined;
 if (data.user) {
   $storeUser = data.user;
+  rank =
+    ranks[
+      Object.keys(ranks).find(
+        (key) =>
+          Object.keys(ranks)
+            .map((key) => parseInt(key))
+            .filter((key) => $storeUser["points"] >= key)
+            .pop() == key
+      )
+    ];
 } else {
   $storeUser = undefined;
 }
@@ -129,20 +140,14 @@ if (data.user) {
               <div class="content-around">
                 <p class="text-xl">Angemeldet als</p>
                 <p class="text-5xl font-bold">{$storeUser["username"]}</p>
+                <div class="divider"></div>
                 <p>
-                  <i class="fa-solid fa-ranking-star mr-2"></i>{ranks[
-                    Object.keys(ranks).find(
-                      (key) =>
-                        Object.keys(ranks)
-                          .map((key) => parseInt(key))
-                          .filter((key) => $storeUser["points"] >= key)
-                          .pop() == key
-                    )
-                  ]}
+                  <i class="fa-solid fa-ranking-star mr-5"></i>{rank.name}<i
+                    class="fa-solid fa-{rank.picture} ml-2"></i>
                 </p>
                 <p>
-                  <i class="fa-solid fa-medal mr-2"></i>
-                  {$storeUser["points"]}
+                  <i class="fa-solid fa-medal mr-5"></i>
+                  {$storeUser["points"].toLocaleString("de")}
                 </p>
               </div>
             {:else}
