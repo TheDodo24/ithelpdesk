@@ -18,7 +18,7 @@ var modal = false;
 </script>
 
 <div class="flex h-screen w-screen content-center items-center justify-center">
-  <div class="card w-fit bg-base-300 shadow-xl">
+  <div class="card mx-5 w-fit bg-base-300 shadow-xl">
     <div class="card-body items-center">
       <div class="btn-group">
         <button
@@ -112,10 +112,13 @@ var modal = false;
         </div>
       </form>
 
-      <div class="mt-5 inline-flex w-full">
+      <div
+        class="mt-5 flex w-full flex-col items-center md:inline-flex md:flex-row">
         <a class="whitespace-pre underline" href="/"
           ><i class="fa-solid fa-arrow-left mr-3"></i>Zurück zur Startseite</a>
-        <a class="ml-10 whitespace-pre underline" href="/forgot-password"
+        <a
+          class="mt-2 whitespace-pre underline md:ml-10"
+          href="/forgot-password"
           >Passwort vergessen?<i class="fa-solid fa-arrow-right ml-3"></i></a>
       </div>
     </div>

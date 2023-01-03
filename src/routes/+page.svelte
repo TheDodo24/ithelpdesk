@@ -111,7 +111,7 @@ if (data.user) {
     <Header user="{$storeUser ? $storeUser['username'] : undefined}" />
 
     <div class="mx-5 mb-5 text-gray-50">
-      <div class="grid grid-cols-3 gap-10">
+      <div class="flex flex-col gap-10 md:grid md:grid-cols-3">
         <div>
           <Box clazz="mt-5 h-auto content-around bg-purple-700">
             <h1 class="text-6xl font-bold">
@@ -389,7 +389,7 @@ if (data.user) {
       <a href="/"
         ><label
           for="my-modal-3"
-          class="btn-sm btn-circle btn absolute right-2 top-2"
+          class="btn btn-sm btn-circle absolute right-2 top-2"
           on:click="{() => {
             modal = false;
           }}">✕</label

@@ -54,7 +54,7 @@ async function requestJson() {
   <h2 class="mb-5 ml-5 text-3xl">Ränge:</h2>
   <div class="flex justify-center">
     <div class="mb-5 w-fit">
-      <div class="mx-5 grid grid-cols-3 gap-10">
+      <div class="mx-5 grid md:grid-flow-row md:grid-cols-3 gap-10">
         <table class="table table-zebra w-full">
           <thead
             ><tr>
@@ -117,9 +117,9 @@ async function requestJson() {
   </div>
   <div class="divider"></div>
   <h2 class="text-3xl ml-5">Scoreboard:</h2>
-  <div class="flex justify-center">
-    <div class="mb-5 w-2/3">
-      <div class="mx-5 grid grid-cols-1">
+  <div class="flex justify-center mt-2">
+    <div class="mb-5 md:w-2/3">
+      <div class="md:mx-5 grid grid-cols-1">
         <table class="table table-zebra w-full">
           <thead>
             <tr>

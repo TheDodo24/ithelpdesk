@@ -18,11 +18,11 @@ onMount(() => {
 });
 </script>
 
-<div class="absolute w-full">
-  <div class="mb-5 text-gray-50">
+<div class="static w-screen">
+  <div class="absolute mx-5 mb-5">
     <Header user="{$storeUser ? $storeUser['username'] : undefined}" />
+    <div id="list"></div>
   </div>
-  <div id="list"></div>
 </div>
 
 {#if modal}
@@ -32,7 +32,7 @@ onMount(() => {
       <a href="/anfragen"
         ><label
           for="my-modal-3"
-          class="btn-sm btn-circle btn absolute right-2 top-2"
+          class="btn btn-sm btn-circle absolute right-2 top-2"
           on:click="{() => {
             modal = false;
           }}">✕</label
