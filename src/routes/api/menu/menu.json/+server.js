@@ -11,11 +11,22 @@ export async function GET() {
 
   let json = JSON.parse(text);
   if (res.status == 200) {
-    let menus = json.filter(function filter(
-      /** @type {{ [x: string]: any; }} */ item
-    ) {
-      return item["day"] == 1;
-    });
+    let date = new Date();
+    let menus;
+
+    if (date.getHours() < 16) {
+      menus = json.filter(function filter(
+        /** @type {{ [x: string]: any; }} */ item
+      ) {
+        return item["day"] == 1;
+      });
+    } else {
+      menus = json.filter(function filter(
+        /** @type {{ [x: string]: any; }} */ item
+      ) {
+        return item["day"] == 2;
+      });
+    }
 
     menus.forEach((/** @type {{ [x: string]: string; }} */ element) => {
       element["title"] = element["title"].replaceAll("<br>", "");
