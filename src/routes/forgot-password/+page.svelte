@@ -9,7 +9,7 @@ var modal = false;
 </script>
 
 <div class="flex h-screen w-screen content-center items-center justify-center">
-  <div class="card w-fit bg-base-300 shadow-xl">
+  <div class="card mx-5 w-fit bg-base-300 shadow-xl">
     <div class="card-body items-center">
       <h1 class="text-2xl font-bold">Passwort zurücksetzen</h1>
       <form

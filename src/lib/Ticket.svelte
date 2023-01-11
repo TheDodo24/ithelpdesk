@@ -8,7 +8,6 @@ import { Shadow } from "svelte-loading-spinners";
 export let id;
 export let modal;
 
-console.log($tickets);
 let promise;
 if (!$tickets || Object.keys($tickets).length == 0) {
   promise = requestJson(id);
@@ -59,17 +58,27 @@ var closeModal = false;
         {#if !$tickets[id].finished}
           <div class="mr-10">
             <button
-              class="btn mx-8 bg-green-500 text-white hover:bg-green-600"
+              class="btn mx-8 hidden bg-green-500 text-white hover:bg-green-600 md:inline"
               on:click="{() => (closeModal = true)}">
               <i class="fa-solid fa-check mr-2"></i> Ticket schließen</button>
             <button
               on:click="{() => goto(id + '/reply')}"
-              class="btn bg-purple-500 text-white hover:bg-purple-600"
+              class="btn hidden bg-purple-500 text-white hover:bg-purple-600 md:inline"
               >+ Antworten</button>
           </div>
         {/if}
       </div>
       <div class="text-lg">Erstellt: {$tickets[id].created}</div>
+      <div class="mt-5 flex flex-col justify-start gap-y-2 md:hidden">
+        <button
+          class="btn w-60 bg-green-500 text-white hover:bg-green-600"
+          on:click="{() => (closeModal = true)}">
+          <i class="fa-solid fa-check mr-2"></i> Ticket schließen</button>
+        <button
+          on:click="{() => goto(id + '/reply')}"
+          class="btn w-60 bg-purple-500 text-white hover:bg-purple-600"
+          >+ Antworten</button>
+      </div>
       {#if $tickets[id].finished}
         <div class="text-lg text-green-500">
           <i class="fa-solid fa-check mr-1"></i> Ticket abgeschlossen
@@ -82,7 +91,7 @@ var closeModal = false;
         <div class="flex flex-col">
           <h2 class="text-2xl font-bold">
             {$tickets[id].expand.author.username}
-            <i class="mx-1 fa-solid fa-{$tickets[id].icon}"></i>- {$tickets[id]
+            <i class="fa-solid mx-1 fa-{$tickets[id].icon}"></i>- {$tickets[id]
               .created}
           </h2>
           <p class="mt-2">{@html $tickets[id].content}</p>
@@ -105,7 +114,7 @@ var closeModal = false;
           <div class="flex flex-col">
             <h2 class="text-2xl font-bold">
               {answer.expand.author.username}
-              <i class="mx-1 fa-solid fa-{answer.icon}"></i>- {answer.created}
+              <i class="fa-solid mx-1 fa-{answer.icon}"></i>- {answer.created}
             </h2>
             <p class="mt-2">{@html answer.text}</p>
             {#if answer.files.length > 0}
@@ -132,7 +141,7 @@ var closeModal = false;
         <a href="?"
           ><label
             for="my-modal-3"
-            class="btn-sm btn-circle btn absolute right-2 top-2"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
             on:click="{() => {
               modal = false;
             }}">✕</label
@@ -171,7 +180,7 @@ var closeModal = false;
         <a href="?"
           ><label
             for="my-modal-3"
-            class="btn-sm btn-circle btn absolute right-2 top-2"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
             on:click="{() => {
               modal = false;
             }}">✕</label
@@ -214,11 +223,10 @@ var closeModal = false;
         Bist du dir sicher, dass du das Ticket schließen möchtest?
       </h3>
       <div class="modal-action">
-        <label
-          for="my-modal"
+        <button
           class="btn bg-red-600 text-white hover:bg-red-700"
           on:click="{() => (closeModal = false)}"
-          ><i class="fa-solid fa-x mr-2"></i> Abbrechen</label>
+          ><i class="fa-solid fa-x mr-2"></i> Abbrechen</button>
         <form method="post">
           <button
             for="my-modal"
