@@ -30,7 +30,7 @@ export var user;
           tabindex="0"
           class="dropdown-content menu rounded-box mt-4 w-52 bg-base-300 p-2 shadow">
           <!-- svelte-ignore a11y-missing-attribute -->
-          <li><a class="btn btn-ghost">Mein Profil</a></li>
+          <li><a class="btn btn-ghost" href="/profile">Mein Profil</a></li>
           <li>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-missing-attribute -->
