@@ -8,6 +8,7 @@ import { menu } from "$lib/stores/menu.js";
 import { potd } from "$lib/stores/potd.js";
 import { weatherJson } from "$lib/stores/weather.js";
 import { tickets } from "$lib/stores/tickets.js";
+import { userList } from "$lib/stores/userList.js";
 import Header from "$lib/Header_test.svelte";
 import Box from "$lib/Box.svelte";
 import { onMount } from "svelte";
@@ -45,6 +46,7 @@ onMount(async () => {
   getPOTD(window);
   getMenu(window);
   getTickets(window);
+  getScoreboard(window);
 });
 
 /**
@@ -87,6 +89,11 @@ async function getWeather(window) {
 async function getTickets(window) {
   const ticketRes = await fetch("api/requests/list.json");
   $tickets = JSON.parse(await ticketRes.text());
+}
+
+async function getScoreboard(window) {
+  const req = await fetch("/api/requests/users.json");
+  $userList = JSON.parse(await req.text());
 }
 var rank = undefined;
 if (data.user) {
@@ -250,17 +257,63 @@ if (data.user) {
               {/if}
             </div>
           </Box>
-          <Box clazz="mt-5 h-auto bg-purple-700">
-            <h1 class="text-2xl font-bold">Scoreboard</h1>
-            <ul class="ml-5 mt-2 list-inside list-decimal">
-              <li>Hallo</li>
-              <li>test</li>
-              <li>Hallo</li>
-              <li>test</li>
-              <li>Hallo</li>
-              <li>test</li>
-            </ul>
-          </Box>
+          {#if $storeUser}
+            <Box clazz="mt-5 h-auto bg-purple-700">
+              <h1 class="text-2xl font-bold">Scoreboard Top-10</h1>
+              {#if $userList}
+                <ul class="ml-5 mt-2 list-inside list-decimal">
+                  {#each $userList as user, i}
+                    {#if i <= 10}
+                      <li class="relative">
+                        <p class="inline">
+                          {user.username}
+                          <i
+                            class="ml-2 fa-solid fa-{ranks[
+                              Object.keys(ranks).find(
+                                (key) =>
+                                  Object.keys(ranks)
+                                    .map((key) => parseInt(key))
+                                    .filter((key) => user.points >= key)
+                                    .pop() == key
+                              )
+                            ].picture}"></i>
+                        </p>
+                        <p class="absolute inset-y-0 right-0">
+                          {user.points.toLocaleString("de")}
+                        </p>
+                      </li>
+                    {/if}
+                  {/each}
+                </ul>
+              {:else}
+                <div class="flex justify-center">
+                  <div class="ml-2 flex-row">
+                    <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24">
+                      <circle
+                        class="opacity-0"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                        data-darkreader-inline-stroke=""
+                        style="--darkreader-inline-stroke:currentColor;"
+                      ></circle>
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        data-darkreader-inline-fill=""
+                        style="--darkreader-inline-fill:currentColor;"></path>
+                    </svg>
+                    <p class="ml-5 mt-10 place-self-start text-left">
+                      Lade Userliste ...
+                    </p>
+                  </div>
+                </div>
+              {/if}
+            </Box>
+          {/if}
         </div>
         <div>
           <Box
@@ -319,7 +372,9 @@ if (data.user) {
             clazz="mt-5 h-auto flex justify-end items-center text-right place-self-end bg-purple-700">
             <div class="whitespace-pre-line">
               <h1 class="text-2xl font-bold">
-                Aramark-Menü am {dateFormatter.format($time)}
+                Aramark-Menü am {$time.getHours() >= 16
+                  ? dateFormatter.format($time.setDate($time.getDate() + 1))
+                  : dateFormatter.format($time)}
               </h1>
 
               {#if $menu == "not-found"}

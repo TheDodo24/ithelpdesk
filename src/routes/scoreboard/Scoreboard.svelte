@@ -1,6 +1,5 @@
 <script>
 import { userList } from "$lib/stores/userList.js";
-import Box from "$lib/Box.svelte";
 import { Shadow } from "svelte-loading-spinners";
 import Error from "../+error.svelte";
 import ranks from "$lib/ranks.json";
